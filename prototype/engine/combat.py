@@ -48,8 +48,8 @@ class CombatResolver:
                 loc = self.game.board.get_location(loc_index)
                 # Apply fear auras from enemy allies at that location
                 for enemy_ally in loc.get_allies(target_player):
-                    if Keyword.FEAR in enemy_ally.card.keywords:
-                        # Fear reduces power
+                    if enemy_ally.has_keyword(Keyword.FEAR):
+                        # Fear reduces power (checks permanent + temp keywords)
                         damage = max(0, damage - 1)  # Simplified: each Fear reduces by 1
         
         result["damage_dealt"] = damage
