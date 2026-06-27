@@ -18,7 +18,17 @@ from engine.game import GameState, GamePhase
 from engine.card import CardType, Faction
 from ui.renderer import render_game_state, render_action_menu, render_messages
 from ui.input_handler import InputHandler
+from ui.browser_renderer import render_to_file
 from ai.simple_ai import SimpleAI
+import webbrowser
+
+
+def refresh_browser_view(game, first_time=False):
+    """Write current game state to the browser view HTML."""
+    path = render_to_file(game)
+    if first_time:
+        webbrowser.open("file:///" + path.replace("\\", "/"))
+    return path
 
 
 def clear_screen():
@@ -126,6 +136,9 @@ def main():
     game = GameState()
     game.setup(fp_faction=fp_faction, shadow_faction=shadow_faction)
     
+    # Open browser view
+    refresh_browser_view(game, first_time=True)
+    
     input_handler = InputHandler(game)
     ai = SimpleAI(game)
     
@@ -153,6 +166,7 @@ def main():
             # Show post-AI board state so player can see what happened
             print(f"\n  --- AI turn complete. Current board: ---")
             print(render_game_state(game))
+            refresh_browser_view(game)
             input("\n  Press Enter to begin your turn...")
             
             # Start FP turn
@@ -200,6 +214,9 @@ def main():
         if game.game_over:
             break
         
+        # Refresh browser view
+        refresh_browser_view(game)
+        
         # Small pause
         input("\n  Press Enter to continue...")
     
@@ -207,6 +224,7 @@ def main():
     clear_screen()
     print_banner()
     print(render_game_state(game))
+    refresh_browser_view(game)
     print()
     print("=" * 80)
     if game.winner == "fp":

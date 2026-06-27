@@ -1,0 +1,45 @@
+{
+  "fp_player": {
+    "faction": "Gondor",
+    "influence": 28,
+    "willpower_pool": 4,
+    "willpower_max": 6,
+    "hand": [
+      {"name": "Gondor Spearman", "cost": 2, "power": 2, "toughness": 2, "type": "Ally", "rules": "A stalwart defender of the White City."},
+      {"name": "Knight of Dol Amroth", "cost": 3, "power": 3, "toughness": 3, "type": "Ally", "rules": "Valor: +1 Power when attacking alongside another ally."},
+      {"name": "The Beacons Are Lit", "cost": 2, "type": "Event", "rules": "Search top 5 for a Gondor ally."},
+      {"name": "Citadel Healer", "cost": 4, "power": 1, "toughness": 3, "type": "Ally", "rules": "Exhaust to heal 2 damage (once/turn)."},
+      {"name": "For Gondor!", "cost": 5, "type": "Event", "rules": "+2 Toughness to all Gondor allies at location."}
+    ],
+    "deck_size": 20,
+    "hero": {"name": "Aragorn, Heir of Isildur", "power": 4, "toughness": 5, "tapped": false},
+    "leaderless": false
+  },
+  "shadow_player": {
+    "faction": "Mordor",
+    "influence": 25,
+    "willpower_pool": 3,
+    "willpower_max": 5,
+    "hand": [
+      {"name": "Orc Archer", "cost": 2, "power": 1, "toughness": 2, "type": "Ally", "rules": "Ranged: Can attack from the back line."},
+      {"name": "Orc Taskmaster", "cost": 3, "power": 2, "toughness": 2, "type": "Ally", "rules": "Exhaust to give target Orc +2 Power."}
+    ],
+    "deck_size": 26,
+    "hero": {"name": "Gothmog, Lieutenant of Morgul", "power": 4, "toughness": 4, "tapped": true},
+    "leaderless": false
+  },
+  "board": {
+    "locations": [
+      {"name": "Minas Tirith", "defense": 5, "controller": "fp", "fp_front": [], "fp_back": [], "shadow_front": ["Orc Warrior(1/2)", "Mordor Orc(1/1)"], "shadow_back": []},
+      {"name": "Open Field", "defense": 3, "controller": null, "fp_front": ["Aragorn(4/5)", "Tower Guard(1/3)"], "fp_back": ["Gondor Archer(2/2)"], "shadow_front": ["Orc Marauder(2/3)"], "shadow_back": ["Orc Archer(1/2)"]},
+      {"name": "Empty", "defense": 0, "controller": null, "fp_front": [], "fp_back": [], "shadow_front": [], "shadow_back": []}
+    ]
+  },
+  "ring": {
+    "corruption": 8,
+    "bearer": "fp"
+  },
+  "active_player": "fp",
+  "turn_number": 4,
+  "phase": "Main Phase"
+}
