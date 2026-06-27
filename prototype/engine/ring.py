@@ -48,13 +48,17 @@ class Ring:
         return self.bearer == "shadow" and not self.shadow_activated_this_turn
     
     def activate_fp(self, choice: str):
-        """Activate the Ring for Free Peoples. Returns the effect description."""
+        """Activate the Ring for Free Peoples. Returns the effect description, or None if already activated."""
+        if self.fp_activated_this_turn or self.bearer != "fp":
+            return None
         self.fp_activated_this_turn = True
         self.add_corruption(2)
         return choice
     
     def activate_shadow(self, choice: str):
-        """Activate the Ring for Shadow. Returns the effect description."""
+        """Activate the Ring for Shadow. Returns the effect description, or None if already activated."""
+        if self.shadow_activated_this_turn or self.bearer != "shadow":
+            return None
         self.shadow_activated_this_turn = True
         self.add_corruption(1)  # Shadow bears the Ring more naturally; +1 vs FP's +2
         return choice
