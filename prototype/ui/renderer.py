@@ -16,7 +16,9 @@ def render_game_state(game) -> str:
     ring = game.ring
     
     # Header
-    active_name = "Free Peoples (Gondor)" if game.active_player == "fp" else "Shadow (Mordor)"
+    fp_faction_name = fp.faction.value if fp and fp.faction else "?"
+    sh_faction_name = sh.faction.value if sh and sh.faction else "?"
+    active_name = f"Free Peoples ({fp_faction_name})" if game.active_player == "fp" else f"Shadow ({sh_faction_name})"
     lines.append("=" * 80)
     lines.append(f"  THE LORD OF THE RINGS: Digital Card Battle  |  Turn {fp.turn_number}  |  {game.current_phase}")
     lines.append(f"  Active: {active_name}")
@@ -25,8 +27,8 @@ def render_game_state(game) -> str:
     # Player info bar
     fp_wp = f"WP:{fp.willpower_pool}/{fp.effective_willpower_max}"
     sh_wp = f"WP:{sh.willpower_pool}/{sh.effective_willpower_max}"
-    fp_info = f"Gondor  |  Influence: {fp.influence:>2}  |  {fp_wp}  |  Hand: {fp.hand_size}  |  Deck: {fp.deck_size}"
-    sh_info = f"Mordor  |  Influence: {sh.influence:>2}  |  {sh_wp}  |  Hand: {sh.hand_size}  |  Deck: {sh.deck_size}"
+    fp_info = f"{fp_faction_name}  |  Influence: {fp.influence:>2}  |  {fp_wp}  |  Hand: {fp.hand_size}  |  Deck: {fp.deck_size}"
+    sh_info = f"{sh_faction_name}  |  Influence: {sh.influence:>2}  |  {sh_wp}  |  Hand: {sh.hand_size}  |  Deck: {sh.deck_size}"
     
     lines.append(f"  {fp_info}")
     lines.append(f"  {sh_info}")
@@ -37,16 +39,16 @@ def render_game_state(game) -> str:
     lines.append("")
     
     # Deployment zones
-    lines.append(render_deployment_zone(board, "fp", "Free Peoples (Gondor)"))
+    lines.append(render_deployment_zone(board, "fp", f"Free Peoples ({fp_faction_name})"))
     lines.append("            |")
-    
+
     # Location row header
     lines.append("  " + " — ".join([
         f"[Slot {i+1}: {loc.location_card.name if loc.location_card else 'Empty'}]" 
         for i, loc in enumerate(board.locations)
     ]))
     lines.append("")
-    
+
     # Each location front/back lines
     loc_lines = ["", "", ""]  # Three lines: FP front, FP back, loc divider, SH front, SH back
     
@@ -78,7 +80,7 @@ def render_game_state(game) -> str:
     
     lines.append("")
     lines.append("            |")
-    lines.append(render_deployment_zone(board, "shadow", "Shadow (Mordor)"))
+    lines.append(render_deployment_zone(board, "shadow", f"Shadow ({sh_faction_name})"))
     lines.append("")
     
     # Hand display
