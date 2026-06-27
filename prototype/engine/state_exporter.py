@@ -34,6 +34,7 @@ def export_state(game: GameState) -> dict[str, Any]:
                 "power": ps.hero.card.power,
                 "toughness": ps.hero.current_toughness,
                 "tapped": ps.hero.tapped,
+                "img": f"ui/assets/heroes/{ps.faction.value.lower()}.png" if ps.faction else None,
             }
 
         return {

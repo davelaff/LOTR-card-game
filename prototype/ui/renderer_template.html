@@ -698,11 +698,15 @@ function renderHeroPanel(panelId, playerData) {
   const faction = playerData.faction;
   const cls = FACTION_CLASS[faction] || 'gondor';
   const tappedClass = hero && hero.tapped ? ' hero-tapped' : '';
+  const isFp = panelId.includes('fp');
 
   let html = '';
   if (hero) {
-    html += `<div class="hero-frame hero-frame-${panelId.includes('fp') ? 'fp' : 'sh'}${tappedClass}">
-      <div class="hero-art">${faction}<br>HERO</div>
+    const artStyle = hero.img 
+      ? `style="background-image:url('${hero.img}');background-size:cover;background-position:center top;"` 
+      : '';
+    html += `<div class="hero-frame hero-frame-${isFp ? 'fp' : 'sh'}${tappedClass}" ${artStyle}>
+      ${!hero.img ? `<div class="hero-art">${faction}<br>HERO</div>` : ''}
       <div class="hero-power-icon">${hero.power}</div>
       <div class="hero-toughness-icon">${hero.toughness}</div>
       <div class="hero-name">${hero.name}</div>
