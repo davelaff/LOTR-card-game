@@ -47,8 +47,20 @@ def _for_gondor(game, ps, es, player, enemy):
 def _last_debate(game, ps, es, player, enemy):
     msgs = []
     search_count = min(7, len(ps.deck))
-    msgs.append(f"Looked at top {search_count} cards. (Simplified: draw 1)")
-    ps.draw_card()
+    best_card = None
+    rest = []
+    for _ in range(search_count):
+        c = ps.deck.pop()
+        if best_card is None:
+            best_card = c
+        else:
+            rest.append(c)
+    if best_card:
+        ps.hand.append(best_card)
+        msgs.append(f"The Last Debate: Chose {best_card.name}. Added to hand.")
+    # Rest go to bottom
+    ps.deck = rest + ps.deck
+    msgs.append(f"Put {len(rest)} cards on bottom of deck.")
     return msgs
 
 
@@ -120,9 +132,32 @@ def _lembas(game, ps, es, player, enemy):
 
 def _last_alliance(game, ps, es, player, enemy):
     msgs = []
-    count = min(8, len(ps.deck))
-    msgs.append(f"The Last Alliance: Revealed top {count}. (Simplified: draw 2)")
-    ps.draw_cards(2)
+    search_count = min(8, len(ps.deck))
+    found = None
+    rest = []
+    for _ in range(search_count):
+        c = ps.deck.pop()
+        if (not found and c.card_type == CardType.ALLY and
+            ("Elf" in c.creature_types or "Man" in c.creature_types)):
+            found = c
+        else:
+            rest.append(c)
+    ps.deck = rest + ps.deck
+    if found:
+        ally = BoardAlly(
+            card=found, current_toughness=found.toughness,
+            turn_entered=ps.turn_number,
+        )
+        for loc in game.board.locations:
+            if loc.controller == player or loc.is_contested():
+                loc.add_ally(ally, player, "front")
+                msgs.append(f"The Last Alliance: Deployed {found.name} to location!")
+                break
+        else:
+            game.board.deploy_ally(ally, player)
+            msgs.append(f"The Last Alliance: Deployed {found.name} to deployment zone.")
+    else:
+        msgs.append(f"The Last Alliance: No Elf or Man ally in top {search_count}.")
     return msgs
 
 
@@ -152,9 +187,21 @@ def _light_of_the_evenstar(game, ps, es, player, enemy):
 
 def _to_me_o_my_kinsfolk(game, ps, es, player, enemy):
     msgs = []
-    count = min(5, len(ps.deck))
-    msgs.append(f"To Me! O My Kinsfolk!: Revealed top {count}. (Simplified: draw 1)")
-    ps.draw_card()
+    search_count = min(5, len(ps.deck))
+    found = None
+    rest = []
+    for _ in range(search_count):
+        c = ps.deck.pop()
+        if not found and c.card_type == CardType.ALLY and "Dwarf" in c.creature_types:
+            found = c
+        else:
+            rest.append(c)
+    if found:
+        ps.hand.append(found)
+        msgs.append(f"To Me! O My Kinsfolk!: Found {found.name}! Added to hand.")
+    else:
+        msgs.append("To Me! O My Kinsfolk!: No Dwarf ally in top 5.")
+    ps.deck = rest + ps.deck
     return msgs
 
 
@@ -276,8 +323,22 @@ def _forth_eorlingas(game, ps, es, player, enemy):
 
 def _straight_road(game, ps, es, player, enemy):
     msgs = []
-    msgs.append("The Straight Road: Ally gains Stealth. Draw a card if it survives.")
-    ps.draw_card()
+    # Target own hero or strongest ally
+    target = None
+    hero = ps.hero
+    if hero and hero.is_alive:
+        target = hero
+    else:
+        all_allies = game.board.get_all_allies(player)
+        if all_allies:
+            target = max(all_allies, key=lambda a: a.card.power)
+    if target:
+        target.add_temp_keyword(Keyword.STEALTH)
+        msgs.append(f"The Straight Road: {target.card.name} gains Stealth this turn.")
+        ps.draw_card()
+        msgs.append("Drew a card — may it survive the journey.")
+    else:
+        msgs.append("The Straight Road: No valid target.")
     return msgs
 
 
@@ -453,10 +514,31 @@ def _they_are_coming(game, ps, es, player, enemy):
 
 def _chasm_opens(game, ps, es, player, enemy):
     msgs = []
+    # Relocate all Goblin allies to the busiest location
     busiest = max(game.board.locations, key=lambda l: len(l.get_allies(enemy)))
+    relocated = 0
+    for loc in game.board.locations:
+        if loc is busiest:
+            continue
+        goblins_to_move = []
+        for ally in loc.get_allies(player):
+            if "Goblin" in ally.card.creature_types:
+                goblins_to_move.append(ally)
+        for ally in goblins_to_move:
+            game.board.remove_ally(ally, player)
+            busiest.add_ally(ally, player, "front")
+            relocated += 1
+    # Also grab goblins from deployment zone
+    zone = game.board.fp_deployment if player == "fp" else game.board.shadow_deployment
+    for ally in list(zone):
+        if "Goblin" in ally.card.creature_types:
+            game.board.remove_ally(ally, player)
+            busiest.add_ally(ally, player, "front")
+            relocated += 1
+    # Deal 2 damage to enemies at busiest
     for ally in busiest.get_allies(enemy):
         ally.take_damage(2)
-    msgs.append("The Chasm Opens: All Goblins relocated! 2 damage at busiest location!")
+    msgs.append(f"The Chasm Opens: {relocated} Goblins relocated! 2 damage at busiest location!")
     return msgs
 
 
