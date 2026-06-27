@@ -27,3 +27,6 @@ desktop.ini
 
 # Hermes
 .hermes/
+
+# Generated browser view
+prototype/game_view.html
