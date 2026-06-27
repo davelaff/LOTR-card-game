@@ -6,7 +6,7 @@
 
 ## What we built this session
 
-1. **Git init** — repo created, 14 commits pushed to GitHub
+1. **Git init** — repo created, 17 commits pushed to GitHub
 2. **136 unit tests** across 6 test files covering all engine modules (BoardAlly, Ring, PlayerState, Board, CombatResolver, GameState)
 3. **4 bugs fixed:**
    - Fear keyword didn't check temp keywords (combat.py — now uses `has_keyword()`)
@@ -55,7 +55,7 @@ Choose faction, browser opens automatically, play via terminal commands.
 | File | Purpose |
 |---|---|
 | `prototype/engine/game.py` | Game loop, turn flow, card play (428 lines) |
-| `prototype/engine/events.py` | Event card handlers + dispatch dict (654 lines) |
+| `prototype/engine/events.py` | Event card handlers + dispatch dict (736 lines) |
 | `prototype/engine/state_exporter.py` | GameState → JSON for browser |
 | `prototype/engine/combat.py` | Attack resolution, keywords |
 | `prototype/engine/board.py` | 3-lane board, rows, deployment |
