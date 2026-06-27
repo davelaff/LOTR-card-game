@@ -2,549 +2,887 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=1200">
-<title>LOTR Card Battle — Browser Renderer Spike</title>
+<meta name="viewport" content="width=1280">
+<title>LOTR Card Battle</title>
 <style>
+/* ═══════════════════════════════════════════════
+   THE LORD OF THE RINGS · DIGITAL CARD BATTLE
+   Hearthstone-inspired board layout
+   ═══════════════════════════════════════════════ */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-body {
-  background: #0d0d1a;
-  color: #d4c5a9;
-  font-family: 'Georgia', 'Times New Roman', serif;
-  min-height: 100vh;
-  overflow-x: hidden;
+@font-face {
+  font-family: 'Ringbearer';
+  src: local('Georgia'), local('Times New Roman');
 }
 
-/* ── Header bar ── */
-#header {
-  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-  border-bottom: 2px solid #c9a96e;
-  padding: 12px 24px;
+body {
+  font-family: 'Ringbearer', 'Georgia', serif;
+  background: #0a0a12;
+  color: #d4c9a0;
+  min-height: 100vh;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
 }
 
-#title {
-  font-size: 22px;
-  font-weight: bold;
-  color: #c9a96e;
-  letter-spacing: 2px;
-  text-shadow: 0 0 20px rgba(201,169,110,0.3);
+/* ═══════════════════════════════════════════════
+   STONE TABLETOP — the entire game surface
+   ═══════════════════════════════════════════════ */
+#tabletop {
+  width: 1240px;
+  min-height: 100vh;
+  background: 
+    /* Stone texture via layered gradients */
+    radial-gradient(ellipse at 20% 50%, rgba(80,70,50,0.3) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 30%, rgba(60,50,40,0.25) 0%, transparent 50%),
+    linear-gradient(180deg, #1a1814 0%, #242018 30%, #1e1c16 60%, #181612 100%);
+  border-left: 4px solid #3a3020;
+  border-right: 4px solid #3a3020;
+  box-shadow: 
+    inset 0 0 200px rgba(0,0,0,0.5),
+    0 0 60px rgba(0,0,0,0.8);
+  position: relative;
+  overflow: hidden;
 }
 
-#ring-track {
+/* Subtle stone grain */
+#tabletop::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.3; pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════
+   HEADER — title, ring, turn info
+   ═══════════════════════════════════════════════ */
+#header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.6), transparent);
+  border-bottom: 1px solid rgba(201,169,110,0.2);
+  position: relative; z-index: 1;
+}
+
+#title-area {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-#ring-icon {
-  width: 36px; height: 36px;
+#title-text {
+  font-size: 18px;
+  font-weight: bold;
+  color: #c9a96e;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 20px rgba(201,169,110,0.4);
+}
+
+#title-ring {
+  width: 32px; height: 32px;
   border-radius: 50%;
-  border: 3px solid #c9a96e;
-  background: radial-gradient(circle at 35% 35%, #ffd700, #8b6914);
-  box-shadow: 0 0 15px rgba(201,169,110,0.5);
+  border: 2px solid #c9a96e;
+  background: radial-gradient(circle at 35% 35%, #ffd700, #8b6914, #4a3000);
+  box-shadow: 0 0 15px rgba(201,169,110,0.5), inset 0 0 8px rgba(255,215,0,0.3);
+  animation: ringPulse 3s infinite;
 }
 
-#corruption-bar-outer {
-  width: 280px; height: 14px;
-  background: #1a1a2e;
-  border: 1px solid #4a4a5a;
-  border-radius: 7px;
-  overflow: hidden;
+#turn-info {
+  font-size: 13px;
+  color: #c9a96e;
+  text-align: right;
+}
+#turn-info .phase { color: #8a8a7a; font-size: 11px; }
+
+/* Ring corruption bar */
+#corruption-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-#corruption-bar-inner {
-  height: 100%;
-  background: linear-gradient(90deg, #4a1a00, #8b0000, #ff0000);
-  transition: width 0.5s ease;
+#corruption-track-outer {
+  width: 200px; height: 12px;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid #2a1510;
   border-radius: 6px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.8);
 }
 
-#corruption-label {
-  font-size: 12px;
+#corruption-track-inner {
+  height: 100%;
+  background: linear-gradient(90deg, #1a0800, #4a1500, #8b0000, #cc1111);
+  transition: width 0.6s ease;
+  border-radius: 5px;
+  box-shadow: inset 0 1px 2px rgba(255,100,0,0.3);
+}
+
+.corruption-high #corruption-track-inner {
+  background: linear-gradient(90deg, #5a0000, #aa0000, #ff0000, #ff4400);
+  box-shadow: 0 0 12px rgba(255,0,0,0.5), inset 0 1px 2px rgba(255,100,0,0.3);
+}
+
+#corruption-value {
+  font-size: 13px;
+  font-weight: bold;
   color: #c9a96e;
   min-width: 50px;
+  text-align: right;
 }
 
-/* ── Phase indicator ── */
-#phase-bar {
-  background: #111122;
-  border-bottom: 1px solid #333355;
-  padding: 6px 24px;
-  font-size: 13px;
+/* ═══════════════════════════════════════════════
+   MAIN BOARD — 3 location lanes
+   ═══════════════════════════════════════════════ */
+#board-area {
   display: flex;
-  justify-content: space-between;
-  color: #8a8aaa;
+  padding: 12px 16px;
+  gap: 10px;
+  flex: 1;
+  position: relative; z-index: 1;
 }
 
-.active-player { color: #c9a96e; font-weight: bold; }
-
-/* ── Main board ── */
-#board-container {
-  display: flex;
-  padding: 16px 24px;
-  gap: 8px;
-  justify-content: center;
-  min-height: 420px;
-}
-
-/* Deployment zones */
-.deployment-zone {
-  width: 100px;
-  background: rgba(201,169,110,0.05);
-  border: 1px dashed #333355;
-  border-radius: 8px;
-  padding: 8px;
+/* ── Hero portraits at edges ── */
+.hero-panel {
+  width: 110px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
-.deployment-label {
-  font-size: 10px;
-  color: #6a6a8a;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 4px;
+.hero-frame {
+  width: 90px;
+  height: 120px;
+  border-radius: 6px;
+  border: 3px solid;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
 }
 
-/* Location slots */
-.location-slot {
+.hero-frame-fp {
+  background: linear-gradient(135deg, #1a3050, #284878);
+  border-color: #5a9acc;
+}
+
+.hero-frame-sh {
+  background: linear-gradient(135deg, #3d1010, #5a1818);
+  border-color: #cc5a5a;
+}
+
+.hero-art {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; color: rgba(255,255,255,0.3);
+  text-align: center;
+  padding: 4px;
+}
+
+.hero-name {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(0,0,0,0.8);
+  padding: 2px 4px;
+  font-size: 8px;
+  font-weight: bold;
+  text-align: center;
+  color: #c9a96e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hero-power-icon {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid #c9a96e;
+  background: #1a1a2e;
+  color: #c9a96e;
+  font-size: 9px;
+  font-weight: bold;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.hero-toughness-icon {
+  position: absolute;
+  top: 3px; right: 3px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid #cc3333;
+  background: #1a1a2e;
+  color: #ff6666;
+  font-size: 9px;
+  font-weight: bold;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.hero-tapped {
+  opacity: 0.5;
+  filter: grayscale(40%);
+}
+
+.hero-tapped::after {
+  content: '⏳';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  color: rgba(255,255,255,0.5);
+}
+
+/* Influence (health) display */
+.influence-display {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.influence-icon {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ff4444, #8b0000);
+  border: 1px solid #cc3333;
+  box-shadow: 0 0 8px rgba(255,0,0,0.3);
+}
+
+.influence-value { color: #ff6666; }
+.influence-max { color: #6a4a4a; font-size: 9px; }
+
+/* ── Location lanes ── */
+.location-lane {
   flex: 1;
-  max-width: 340px;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid #2a2a44;
-  border-radius: 8px;
-  padding: 8px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid #2a2518;
+  border-radius: 6px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  transition: border-color 0.4s, box-shadow 0.4s;
+}
+
+.location-lane.contested {
+  border-color: rgba(201,169,110,0.5);
+  box-shadow: 0 0 20px rgba(201,169,110,0.15), inset 0 0 30px rgba(201,169,110,0.05);
 }
 
 .location-header {
-  text-align: center;
-  font-size: 12px;
-  padding: 4px;
-  margin-bottom: 4px;
-  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 11px;
   font-weight: bold;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
-.location-fp { background: rgba(30,60,100,0.3); color: #7eb8da; }
-.location-shadow { background: rgba(80,20,20,0.3); color: #da7e7e; }
-.location-neutral { background: rgba(50,50,50,0.3); color: #8a8a8a; }
+.location-fp { background: rgba(30,60,100,0.4); color: #7eb8da; }
+.location-shadow { background: rgba(80,20,20,0.4); color: #da7e7e; }
+.location-neutral { background: rgba(40,40,40,0.4); color: #8a8a8a; }
 
 .location-defense {
-  font-size: 10px;
-  color: #a0a0a0;
-}
-
-.row {
-  display: flex;
-  gap: 4px;
-  justify-content: center;
-  padding: 4px 0;
-  min-height: 44px;
-  flex-wrap: wrap;
-}
-
-.fp-row { border-bottom: 1px dotted #1a2a44; }
-.sh-row { border-top: 1px dotted #441a1a; }
-
-.row-label {
   font-size: 9px;
-  color: #4a4a6a;
-  writing-mode: vertical-lr;
-  text-orientation: mixed;
-  margin-right: 2px;
-  width: 14px;
-  text-align: center;
+  opacity: 0.7;
+  margin-left: 6px;
 }
 
-/* ── Cards ── */
-.card {
-  width: 90px;
-  height: 60px;
+/* ── Rows within a location ── */
+.unit-row {
+  display: flex;
+  gap: 3px;
+  justify-content: center;
+  padding: 4px 6px;
+  min-height: 52px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.fp-zone { border-bottom: 1px dotted rgba(100,150,200,0.15); }
+.sh-zone { border-top: 1px dotted rgba(200,100,100,0.15); }
+
+/* ── Mini cards (board units) ── */
+.unit-card {
+  width: 82px;
+  height: 46px;
   border-radius: 4px;
-  border: 2px solid #555;
+  border: 2px solid;
   position: relative;
-  font-size: 10px;
-  cursor: default;
+  font-size: 9px;
   transition: transform 0.15s, box-shadow 0.15s;
   overflow: hidden;
+  cursor: default;
 }
 
-.card:hover {
+.unit-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.5);
 }
 
-.card-tapped { opacity: 0.5; transform: rotate(5deg); }
+.unit-tapped { opacity: 0.45; filter: grayscale(30%); }
 
-.card-name {
+.unit-power {
   position: absolute;
-  bottom: 2px;
-  left: 4px;
-  right: 4px;
-  font-size: 8px;
-  font-weight: bold;
+  bottom: 2px; left: 4px;
+  font-size: 12px; font-weight: bold;
+  color: #ffd700;
+  text-shadow: 0 0 4px rgba(0,0,0,0.8);
+}
+
+.unit-health {
+  position: absolute;
+  bottom: 2px; right: 4px;
+  font-size: 12px; font-weight: bold;
+  color: #ff4444;
+  text-shadow: 0 0 4px rgba(0,0,0,0.8);
+}
+
+.unit-name {
+  position: absolute;
+  top: 2px; left: 4px; right: 4px;
+  font-size: 7.5px; font-weight: bold;
+  color: #e8dcc8;
   text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
-.card-power {
+.unit-creature {
   position: absolute;
-  top: 2px;
-  left: 4px;
-  font-size: 11px;
-  font-weight: bold;
-  color: #ffcc00;
-  text-shadow: 0 0 3px rgba(0,0,0,0.8);
+  top: 14px; left: 4px; right: 4px;
+  font-size: 6.5px;
+  color: rgba(255,255,255,0.4);
+  text-align: center;
 }
 
-.card-toughness {
+/* Hero unit is slightly larger */
+.unit-hero {
+  width: 90px; height: 52px;
+  border-width: 3px;
+}
+
+/* Keywords on card */
+.unit-keywords {
   position: absolute;
-  top: 2px;
-  right: 4px;
-  font-size: 11px;
-  font-weight: bold;
-  color: #ff6666;
-  text-shadow: 0 0 3px rgba(0,0,0,0.8);
+  bottom: 16px; left: 4px; right: 4px;
+  font-size: 6px;
+  color: rgba(255,200,100,0.6);
+  text-align: center;
+  white-space: nowrap; overflow: hidden;
 }
 
-.card-hero { border-width: 3px; width: 95px; height: 64px; }
+/* Faction-specific card gradients */
+.card-gondor { background: linear-gradient(135deg, #152840, #1e3a5f, #284a70); border-color: #5a9acc; }
+.card-mordor { background: linear-gradient(135deg, #2a0a0a, #3d1010, #5a1818); border-color: #cc5a5a; }
+.card-elven { background: linear-gradient(135deg, #122a1a, #1a3a2a, #285a3a); border-color: #5acc7e; }
+.card-dwarven { background: linear-gradient(135deg, #302018, #4a3020, #604528); border-color: #c9a060; }
+.card-rohan { background: linear-gradient(135deg, #283812, #3d5a1e, #506e2a); border-color: #a8c84e; }
+.card-hobbit { background: linear-gradient(135deg, #3a2a14, #5a4a2a, #7a5a30); border-color: #8db600; }
+.card-isengard { background: linear-gradient(135deg, #303030, #4a4a4a, #606060); border-color: #cccccc; }
+.card-moria { background: linear-gradient(135deg, #1a1010, #2a1a1a, #4a2828); border-color: #8b4040; }
+.card-harad { background: linear-gradient(135deg, #3a2010, #5a3420, #804828); border-color: #e0b040; }
+.card-nazgul { background: linear-gradient(135deg, #0a0a10, #1a1020, #2a1830); border-color: #7a3a9a; }
 
-/* Faction card backgrounds */
-.card-gondor { background: linear-gradient(135deg, #1e3a5f, #2a5080); border-color: #7eb8da; }
-.card-mordor { background: linear-gradient(135deg, #3d0000, #5a1010); border-color: #da7e7e; }
-.card-elven { background: linear-gradient(135deg, #1a3a2a, #2a5a3a); border-color: #7eda7e; }
-.card-dwarven { background: linear-gradient(135deg, #4a3728, #6a4a38); border-color: #d4a574; }
-.card-rohan { background: linear-gradient(135deg, #3d5a1e, #5a7a2a); border-color: #c9a84e; }
-.card-hobbit { background: linear-gradient(135deg, #5a4a2a, #7a6a3a); border-color: #8db600; }
-.card-isengard { background: linear-gradient(135deg, #4a4a4a, #6a6a6a); border-color: #cccccc; }
-.card-moria { background: linear-gradient(135deg, #2a1a1a, #4a2a2a); border-color: #8b0000; }
-.card-harad { background: linear-gradient(135deg, #5a3a1e, #8a5a2a); border-color: #ffd700; }
-.card-nazgul { background: linear-gradient(135deg, #1a1a1a, #2a1a2a); border-color: #6a2a8a; }
-
-/* ── Hand area ── */
-#hand-container {
-  padding: 0 24px 16px;
+/* ═══════════════════════════════════════════════
+   DEPLOYMENT ZONES
+   ═══════════════════════════════════════════════ */
+.deploy-zone {
+  width: 100px;
+  background: rgba(201,169,110,0.04);
+  border: 1px dashed rgba(201,169,110,0.2);
+  border-radius: 6px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
 
-.hand-section {
-  margin-bottom: 8px;
-}
-
-.hand-section h3 {
-  font-size: 11px;
-  color: #8a8aaa;
-  margin-bottom: 6px;
+.deploy-label {
+  font-size: 8px;
+  color: rgba(201,169,110,0.5);
   text-transform: uppercase;
   letter-spacing: 1px;
+  text-align: center;
 }
 
-.hand-cards {
+.deploy-ally {
+  width: 76px;
+  height: 42px;
+  border-radius: 3px;
+  border: 1px solid;
+  position: relative;
+  font-size: 8px;
+}
+
+.deploy-ally .unit-power { font-size: 10px; }
+.deploy-ally .unit-health { font-size: 10px; }
+.deploy-ally .unit-name { font-size: 7px; }
+
+.empty-slot {
+  width: 82px; height: 46px;
+  border: 1px dashed rgba(255,255,255,0.08);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.12);
+  font-size: 7px;
+}
+
+/* ═══════════════════════════════════════════════
+   RESOURCE BAR (willpower, deck)
+   ═══════════════════════════════════════════════ */
+#resource-bar {
   display: flex;
+  justify-content: space-between;
+  padding: 8px 20px;
+  border-top: 1px solid rgba(201,169,110,0.15);
+  position: relative; z-index: 1;
+}
+
+.resource-group {
+  display: flex;
+  align-items: center;
   gap: 8px;
+}
+
+.willpower-gems {
+  display: flex;
+  gap: 2px;
+}
+
+.wp-gem {
+  width: 14px; height: 14px;
+  border-radius: 3px;
+  border: 1px solid;
+}
+
+.wp-gem-filled {
+  background: radial-gradient(circle at 30% 30%, #7ad4ff, #2a90cc, #0a4060);
+  border-color: #5ac0ee;
+  box-shadow: 0 0 8px rgba(74,201,255,0.5), inset 0 1px 3px rgba(255,255,255,0.3);
+}
+
+.wp-gem-empty {
+  background: rgba(10,20,30,0.5);
+  border-color: #1a3040;
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
+}
+
+.stat-label { font-size: 10px; color: #6a6a6a; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-value { font-size: 13px; font-weight: bold; color: #c9a96e; }
+
+/* ═══════════════════════════════════════════════
+   HAND DISPLAY
+   ═══════════════════════════════════════════════ */
+#hand-area {
+  padding: 8px 20px 12px;
+  position: relative; z-index: 1;
+}
+
+.hand-row {
+  display: flex;
+  gap: 10px;
   flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.hand-label {
+  font-size: 9px;
+  color: rgba(201,169,110,0.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  margin-bottom: 4px;
 }
 
 .hand-card {
-  width: 100px;
-  height: 68px;
-  border-radius: 4px;
-  border: 2px solid #555;
+  width: 110px;
+  height: 74px;
+  border-radius: 5px;
+  border: 2px solid;
   position: relative;
-  font-size: 10px;
+  font-size: 9px;
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
+  overflow: hidden;
 }
 
 .hand-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 6px 20px rgba(201,169,110,0.3);
-  z-index: 10;
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 8px 24px rgba(201,169,110,0.3);
+  z-index: 20;
 }
 
-.hand-card .card-cost {
+.hand-cost {
   position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 18px; height: 18px;
+  top: 4px; left: 4px;
+  width: 20px; height: 20px;
   border-radius: 50%;
-  background: #1a1a2e;
-  border: 1px solid #c9a96e;
-  color: #c9a96e;
-  font-size: 10px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: radial-gradient(circle at 40% 40%, #2a3050, #0a0a1a);
+  border: 2px solid #4ac9ff;
+  color: #4ac9ff;
+  font-size: 11px; font-weight: bold;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 8px rgba(74,201,255,0.3);
 }
 
-.hand-card .card-type {
+.hand-type {
   position: absolute;
-  top: 3px;
-  right: 4px;
-  font-size: 8px;
-  color: #8a8aaa;
+  top: 6px; right: 6px;
+  font-size: 7px;
+  color: rgba(255,255,255,0.4);
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.hand-card .card-stats {
+.hand-stats {
   position: absolute;
-  bottom: 18px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-around;
-  font-size: 11px;
-  font-weight: bold;
+  bottom: 16px; left: 0; right: 0;
+  display: flex; justify-content: space-around;
+  font-size: 13px; font-weight: bold;
 }
 
-.hand-card .card-name-hand {
+.hand-stat-power { color: #ffd700; text-shadow: 0 0 3px rgba(0,0,0,0.8); }
+.hand-stat-health { color: #ff4444; text-shadow: 0 0 3px rgba(0,0,0,0.8); }
+
+.hand-name {
   position: absolute;
-  bottom: 2px;
-  left: 4px;
-  right: 4px;
-  font-size: 8px;
-  font-weight: bold;
+  bottom: 2px; left: 4px; right: 4px;
+  font-size: 7.5px; font-weight: bold;
+  color: #e8dcc8;
   text-align: center;
-  white-space: nowrap;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.hand-rules {
+  position: absolute;
+  top: 28px; left: 6px; right: 6px;
+  font-size: 6.5px;
+  color: rgba(255,255,255,0.35);
+  text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-/* ── Player info panels ── */
-#info-bar {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 24px;
-  border-top: 1px solid #2a2a44;
-}
+/* Event/artifact cards in hand — no stats */
+.hand-card-event .hand-stats { display: none; }
 
-.player-info {
-  display: flex;
-  gap: 16px;
-  font-size: 12px;
-}
-
-.player-info .label { color: #6a6a8a; }
-.player-info .value { color: #c9a96e; font-weight: bold; }
-
-.fp-color { color: #7eb8da; }
-.sh-color { color: #da7e7e; }
-
-/* ── Empty slot ── */
-.empty-slot {
-  width: 90px;
-  height: 60px;
-  border: 1px dashed #2a2a44;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #3a3a5a;
-  font-size: 8px;
+/* ═══════════════════════════════════════════════
+   FOOTER — phase indicator
+   ═══════════════════════════════════════════════ */
+#footer {
+  padding: 6px 20px;
+  text-align: center;
+  border-top: 1px solid rgba(201,169,110,0.1);
+  font-size: 10px;
+  color: rgba(201,169,110,0.4);
+  position: relative; z-index: 1;
 }
 
 /* ── Animations ── */
 @keyframes ringPulse {
-  0%, 100% { box-shadow: 0 0 15px rgba(201,169,110,0.5); }
-  50% { box-shadow: 0 0 30px rgba(201,169,110,0.9); }
+  0%, 100% { box-shadow: 0 0 15px rgba(201,169,110,0.5), inset 0 0 8px rgba(255,215,0,0.3); }
+  50% { box-shadow: 0 0 30px rgba(201,169,110,0.9), inset 0 0 14px rgba(255,215,0,0.5); }
 }
 
-#ring-icon { animation: ringPulse 3s infinite; }
+@keyframes contestedGlow {
+  0%, 100% { border-color: rgba(201,169,110,0.35); }
+  50% { border-color: rgba(201,169,110,0.65); }
+}
+
+.location-lane.contested { animation: contestedGlow 2s infinite; }
 </style>
 </head>
 <body>
+<div id="tabletop">
 
 <div id="header">
-  <div id="title">THE LORD OF THE RINGS · DIGITAL CARD BATTLE</div>
-  <div id="ring-track">
-    <div id="ring-icon"></div>
-    <div id="corruption-bar-outer"><div id="corruption-bar-inner"></div></div>
-    <div id="corruption-label">8/30</div>
+  <div id="title-area">
+    <div id="title-ring"></div>
+    <div>
+      <div id="title-text">THE LORD OF THE RINGS</div>
+      <div style="font-size:9px;color:rgba(201,169,110,0.4);letter-spacing:1px;">DIGITAL CARD BATTLE</div>
+    </div>
+  </div>
+  <div id="corruption-area">
+    <span style="font-size:9px;color:rgba(201,169,110,0.5);">CORRUPTION</span>
+    <div id="corruption-track-outer"><div id="corruption-track-inner"></div></div>
+    <div id="corruption-value">0/30</div>
+  </div>
+  <div id="turn-info">
+    <div>Turn <span id="turn-num">1</span></div>
+    <div class="phase" id="phase-text">Main Phase</div>
   </div>
 </div>
 
-<div id="phase-bar">
-  <span>Turn <span id="turn-num">4</span></span>
-  <span class="active-player">▶ <span id="active-player">Free Peoples</span> · Main Phase</span>
-  <span>⚔ LOTR · Alpha</span>
-</div>
+<div id="board-area">
+  <!-- FP Hero Panel -->
+  <div class="hero-panel" id="fp-hero-panel"></div>
 
-<div id="board-container">
   <!-- FP Deployment -->
-  <div class="deployment-zone">
-    <div class="deployment-label">🗡 FP Deployment</div>
-    <div class="empty-slot">Empty</div>
-  </div>
+  <div class="deploy-zone" id="fp-deploy"></div>
 
-  <!-- Location slots -->
-  <div class="location-slot" id="loc-0"></div>
-  <div class="location-slot" id="loc-1"></div>
-  <div class="location-slot" id="loc-2"></div>
+  <!-- 3 Location Lanes -->
+  <div class="location-lane" id="lane-0"></div>
+  <div class="location-lane" id="lane-1"></div>
+  <div class="location-lane" id="lane-2"></div>
 
   <!-- SH Deployment -->
-  <div class="deployment-zone">
-    <div class="deployment-label">☠ SH Deployment</div>
-    <div class="empty-slot">Empty</div>
-  </div>
+  <div class="deploy-zone" id="sh-deploy"></div>
+
+  <!-- SH Hero Panel -->
+  <div class="hero-panel" id="sh-hero-panel"></div>
 </div>
 
-<div id="info-bar">
-  <div class="player-info">
-    <span class="fp-color">■ Gondor</span>
-    <span class="label">Influence:</span> <span class="value" id="fp-influence">28</span>/30
-    <span class="label">Willpower:</span> <span class="value" id="fp-wp">4</span>/<span id="fp-wpmax">6</span>
-    <span class="label">Deck:</span> <span class="value" id="fp-deck">20</span>
-  </div>
-  <div class="player-info">
-    <span class="label">Deck:</span> <span class="value" id="sh-deck">26</span>
-    <span class="label">Willpower:</span> <span class="value" id="sh-wp">3</span>/<span id="sh-wpmax">5</span>
-    <span class="label">Influence:</span> <span class="value" id="sh-influence">25</span>/30
-    <span class="sh-color">Mordor □</span>
-  </div>
+<div id="resource-bar">
+  <div class="resource-group" id="fp-resources"></div>
+  <div class="resource-group" id="sh-resources"></div>
 </div>
 
-<div id="hand-container">
-  <div class="hand-section" id="fp-hand-section"></div>
-  <div class="hand-section" id="sh-hand-section"></div>
+<div id="hand-area">
+  <div class="hand-label" style="text-align:left;" id="fp-hand-label"></div>
+  <div class="hand-row" id="fp-hand"></div>
+  <div class="hand-label" style="text-align:right;" id="sh-hand-label"></div>
+  <div class="hand-row" id="sh-hand"></div>
+</div>
+
+<div id="footer">
+  ♜ THE LORD OF THE RINGS · Digital Card Battle · Alpha · ♜
+</div>
+
 </div>
 
 <script>
-// ── Renderer ──
-const FACTION_COLORS = {
-  'Gondor': 'gondor', 'Mordor': 'mordor', 'Elven': 'elven',
-  'Dwarven': 'dwarven', 'Rohan': 'rohan', 'Hobbit': 'hobbit',
-  'Isengard': 'isengard', 'Moria': 'moria', 'Harad': 'harad',
-  'Nazgul': 'nazgul'
+// ═══════════════════════════════════════════════
+// RENDER ENGINE
+// ═══════════════════════════════════════════════
+
+const FACTION_CLASS = {
+  'Gondor':'gondor','Mordor':'mordor','Elven':'elven','Dwarven':'dwarven',
+  'Rohan':'rohan','Hobbit':'hobbit','Isengard':'isengard','Moria':'moria',
+  'Harad':'harad','Nazgul':'nazgul'
 };
 
-function renderCard(allyStr, faction, isHero, tapped) {
-  if (!allyStr || allyStr === '') return '<div class="empty-slot">-</div>';
-  // Parse "Name(P/T)" or just "Name"
-  const match = allyStr.match(/^(.+?)\((\d+)\/(\d+)\)$/);
-  const name = match ? match[1].trim() : allyStr;
-  const power = match ? match[2] : '';
-  const toughness = match ? match[3] : '';
+function parseUnit(str) {
+  // "Name(P/T)" or just "Name" or ""
+  if (!str) return null;
+  const m = str.match(/^(.+?)\((\d+)\/(\d+)\)$/);
+  return m ? { name: m[1].trim(), power: parseInt(m[2]), health: parseInt(m[3]) } : { name: str };
+}
+
+function isHeroUnit(name, heroData) {
+  return heroData && name === heroData.name;
+}
+
+function unitHTML(unit, faction, heroData, isHeroCard) {
+  if (!unit) return '<div class="empty-slot">—</div>';
+  const cls = FACTION_CLASS[faction] || 'gondor';
+  const heroClass = isHeroCard ? ' unit-hero' : '';
   
-  const cls = FACTION_COLORS[faction] || 'gondor';
-  const heroClass = isHero ? ' card-hero' : '';
-  const tapClass = tapped ? ' card-tapped' : '';
-  
-  return `<div class="card card-${cls}${heroClass}${tapClass}">
-    ${power ? `<div class="card-power">${power}</div>` : ''}
-    ${toughness ? `<div class="card-toughness">${toughness}</div>` : ''}
-    <div class="card-name">${name}</div>
+  return `<div class="unit-card card-${cls}${heroClass}">
+    <div class="unit-name">${unit.name}</div>
+    ${unit.power != null ? `<div class="unit-power">${unit.power}</div>` : ''}
+    ${unit.health != null ? `<div class="unit-health">${unit.health}</div>` : ''}
   </div>`;
 }
 
-function renderLocation(loc, fpFaction, shFaction, index) {
-  const name = loc.name;
-  const def = loc.defense || 0;
-  const ctrl = loc.controller;
-  
-  let locHeaderCls = 'location-neutral';
-  let locCtrlLabel = 'Neutral';
-  if (ctrl === 'fp') { locHeaderCls = 'location-fp'; locCtrlLabel = 'Free Peoples'; }
-  if (ctrl === 'shadow') { locHeaderCls = 'location-shadow'; locCtrlLabel = 'Shadow'; }
-  
-  let html = `<div class="location-header ${locHeaderCls}">
-    ${name} <span class="location-defense">(${def} Def)</span> — ${locCtrlLabel}
-  </div>`;
-  
-  // FP row (front then back, shown at top)  
-  html += '<div class="row fp-row">';
-  html += '<div class="row-label">FP▼</div>';
-  const fpFront = loc.fp_front || [];
-  fpFront.forEach(a => { html += renderCard(a, fpFaction, a.includes('Aragorn')); });
-  if (fpFront.length === 0) html += '<div class="empty-slot">—</div>';
-  html += '</div>';
-  
-  html += '<div class="row fp-row">';
-  html += '<div class="row-label">▼</div>';
-  const fpBack = loc.fp_back || [];
-  fpBack.forEach(a => { html += renderCard(a, fpFaction, false); });
-  if (fpBack.length === 0) html += '<div class="empty-slot">(back)</div>';
-  html += '</div>';
-  
-  // Divider
-  html += '<div style="border-top:1px solid #2a2a44;margin:2px 0"></div>';
-  
-  // SH row (back then front, shown at bottom)
-  html += '<div class="row sh-row">';
-  html += '<div class="row-label">▲</div>';
-  const shBack = loc.shadow_back || [];
-  shBack.forEach(a => { html += renderCard(a, shFaction, false); });
-  if (shBack.length === 0) html += '<div class="empty-slot">(back)</div>';
-  html += '</div>';
-  
-  html += '<div class="row sh-row">';
-  html += '<div class="row-label">SH▲</div>';
-  const shFront = loc.shadow_front || [];
-  shFront.forEach(a => { html += renderCard(a, shFaction, a.includes('Gothmog')); });
-  if (shFront.length === 0) html += '<div class="empty-slot">—</div>';
-  html += '</div>';
-  
-  return html;
-}
+function renderHeroPanel(panelId, playerData) {
+  const panel = document.getElementById(panelId);
+  const hero = playerData.hero;
+  const faction = playerData.faction;
+  const cls = FACTION_CLASS[faction] || 'gondor';
+  const tappedClass = hero && hero.tapped ? ' hero-tapped' : '';
 
-function renderHand(cards, faction) {
-  const cls = FACTION_COLORS[faction] || 'gondor';
   let html = '';
-  cards.forEach(c => {
-    html += `<div class="hand-card card-${cls}">
-      <div class="card-cost">${c.cost}</div>
-      <div class="card-type">${c.type || 'Ally'}</div>
-      ${c.power ? `<div class="card-stats"><span style="color:#ffcc00">${c.power}</span><span style="color:#ff6666">${c.toughness}</span></div>` : ''}
-      <div class="card-name-hand">${c.name}</div>
+  if (hero) {
+    html += `<div class="hero-frame hero-frame-${panelId.includes('fp') ? 'fp' : 'sh'}${tappedClass}">
+      <div class="hero-art">${faction}<br>HERO</div>
+      <div class="hero-power-icon">${hero.power}</div>
+      <div class="hero-toughness-icon">${hero.toughness}</div>
+      <div class="hero-name">${hero.name}</div>
+    </div>`;
+  }
+  // Influence display
+  html += `<div class="influence-display">
+    <div class="influence-icon"></div>
+    <span class="influence-value">${playerData.influence}</span>
+    <span class="influence-max">/30</span>
+  </div>`;
+  panel.innerHTML = html;
+}
+
+function renderDeployZone(zoneId, allies, faction) {
+  const zone = document.getElementById(zoneId);
+  const cls = FACTION_CLASS[faction] || 'gondor';
+  let html = `<div class="deploy-label">${zoneId.includes('fp') ? '🗡' : '☠'} DEPLOYMENT</div>`;
+  if (allies.length === 0) {
+    html += '<div class="empty-slot" style="width:76px;height:42px;">Empty</div>';
+  } else {
+    allies.forEach(a => {
+      html += `<div class="deploy-ally card-${cls}">
+        <div class="unit-name">${a.name}</div>
+        ${a.power != null ? `<div class="unit-power">${a.power}</div>` : ''}
+        ${a.health != null ? `<div class="unit-health">${a.health}</div>` : ''}
+      </div>`;
+    });
+  }
+  zone.innerHTML = html;
+}
+
+function renderLane(laneId, locData, fpFaction, shFaction, fpHero, shHero) {
+  const lane = document.getElementById(laneId);
+  const name = locData.name;
+  const def = locData.defense || 0;
+  const ctrl = locData.controller;
+
+  let headerCls = 'location-neutral';
+  let ctrlLabel = 'Neutral';
+  if (ctrl === 'fp') { headerCls = 'location-fp'; ctrlLabel = 'Free Peoples'; }
+  if (ctrl === 'shadow') { headerCls = 'location-shadow'; ctrlLabel = 'Shadow'; }
+
+  // Check if contested (both sides have units)
+  const hasFP = locData.fp_front.length + locData.fp_back.length > 0;
+  const hasSH = locData.shadow_front.length + locData.shadow_back.length > 0;
+  if (hasFP && hasSH) lane.classList.add('contested');
+  else lane.classList.remove('contested');
+
+  let html = `<div class="location-header ${headerCls}">
+    ${name} <span class="location-defense">· ${def} Def</span>
+    <span style="font-size:8px;opacity:0.5;margin-left:4px;">${ctrlLabel}</span>
+  </div>`;
+
+  // FP front row
+  html += '<div class="unit-row fp-zone">';
+  locData.fp_front.forEach(u => {
+    const unit = parseUnit(u);
+    html += unit ? unitHTML(unit, fpFaction, fpHero, isHeroUnit(unit.name, fpHero)) : '';
+  });
+  if (locData.fp_front.length === 0) html += '<div class="empty-slot" style="width:82px;height:46px;">front</div>';
+  html += '</div>';
+
+  // FP back row
+  html += '<div class="unit-row fp-zone" style="border-bottom:none;">';
+  locData.fp_back.forEach(u => {
+    const unit = parseUnit(u);
+    html += unit ? unitHTML(unit, fpFaction, fpHero, false) : '';
+  });
+  if (locData.fp_back.length === 0) html += '<div class="empty-slot" style="width:82px;height:46px;">back</div>';
+  html += '</div>';
+
+  // Divider
+  html += '<div style="border-top:2px solid rgba(201,169,110,0.15);margin:4px 8px;"></div>';
+
+  // SH back row
+  html += '<div class="unit-row sh-zone" style="border-top:none;">';
+  locData.shadow_back.forEach(u => {
+    const unit = parseUnit(u);
+    html += unit ? unitHTML(unit, shFaction, shHero, false) : '';
+  });
+  if (locData.shadow_back.length === 0) html += '<div class="empty-slot" style="width:82px;height:46px;">back</div>';
+  html += '</div>';
+
+  // SH front row
+  html += '<div class="unit-row sh-zone">';
+  locData.shadow_front.forEach(u => {
+    const unit = parseUnit(u);
+    html += unit ? unitHTML(unit, shFaction, shHero, isHeroUnit(unit.name, shHero)) : '';
+  });
+  if (locData.shadow_front.length === 0) html += '<div class="empty-slot" style="width:82px;height:46px;">front</div>';
+  html += '</div>';
+
+  lane.innerHTML = html;
+}
+
+function renderWillpower(containerId, playerData) {
+  const cont = document.getElementById(containerId);
+  const current = playerData.willpower_pool;
+  const max = playerData.willpower_max;
+  let gems = '';
+  for (let i = 0; i < max; i++) {
+    gems += `<div class="wp-gem ${i < current ? 'wp-gem-filled' : 'wp-gem-empty'}"></div>`;
+  }
+  cont.innerHTML = `
+    <span class="stat-label">Willpower</span>
+    <div class="willpower-gems">${gems}</div>
+    <span class="stat-value">${current}/${max}</span>
+    <span style="margin-left:12px;" class="stat-label">Deck</span>
+    <span class="stat-value">${playerData.deck_size}</span>
+    <span style="margin-left:8px;font-size:8px;color:${playerData.leaderless ? '#ff4444' : 'transparent'};">${playerData.leaderless ? 'LEADERLESS' : ''}</span>
+  `;
+}
+
+function renderHand(containerId, labelId, playerData) {
+  const handEl = document.getElementById(containerId);
+  const labelEl = document.getElementById(labelId);
+  const faction = playerData.faction;
+  const cls = FACTION_CLASS[faction] || 'gondor';
+  const hand = playerData.hand || [];
+
+  labelEl.textContent = `${playerData.faction} Hand (${hand.length})`;
+
+  let html = '';
+  hand.forEach(c => {
+    const isEvent = c.type === 'Event';
+    const isArtifact = c.type === 'Artifact';
+    const hasStats = c.power != null;
+    html += `<div class="hand-card card-${cls}${isEvent || isArtifact ? ' hand-card-event' : ''}">
+      <div class="hand-cost">${c.cost}</div>
+      <div class="hand-type">${c.type || ''}</div>
+      ${hasStats ? `<div class="hand-stats"><span class="hand-stat-power">${c.power}</span><span class="hand-stat-health">${c.toughness}</span></div>` : ''}
+      <div class="hand-name">${c.name}</div>
+      ${c.rules ? `<div class="hand-rules">${c.rules}</div>` : ''}
     </div>`;
   });
-  return html;
+  handEl.innerHTML = html;
 }
 
 function render(state) {
+  const fp = state.fp_player;
+  const sh = state.shadow_player;
+  const board = state.board;
+  const ring = state.ring;
+
+  // Header
   document.getElementById('turn-num').textContent = state.turn_number;
-  document.getElementById('active-player').textContent = 
-    state.active_player === 'fp' ? 'Free Peoples' : 'Shadow';
-  
+  document.getElementById('phase-text').textContent = state.phase;
+
   // Ring
-  const corruption = state.ring.corruption;
-  document.getElementById('corruption-bar-inner').style.width = (corruption / 30 * 100) + '%';
-  document.getElementById('corruption-label').textContent = corruption + '/30';
-  if (corruption >= 20) {
-    document.getElementById('corruption-bar-inner').style.background = 'linear-gradient(90deg, #8b0000, #ff0000, #ff4444)';
-  }
-  
-  // Info bar
-  document.getElementById('fp-influence').textContent = state.fp_player.influence;
-  document.getElementById('fp-wp').textContent = state.fp_player.willpower_pool;
-  document.getElementById('fp-wpmax').textContent = state.fp_player.willpower_max;
-  document.getElementById('fp-deck').textContent = state.fp_player.deck_size;
-  document.getElementById('sh-influence').textContent = state.shadow_player.influence;
-  document.getElementById('sh-wp').textContent = state.shadow_player.willpower_pool;
-  document.getElementById('sh-wpmax').textContent = state.shadow_player.willpower_max;
-  document.getElementById('sh-deck').textContent = state.shadow_player.deck_size;
-  
-  // Board
-  const locs = state.board.locations;
-  document.getElementById('loc-0').innerHTML = renderLocation(locs[0], state.fp_player.faction, state.shadow_player.faction, 0);
-  document.getElementById('loc-1').innerHTML = renderLocation(locs[1], state.fp_player.faction, state.shadow_player.faction, 1);
-  document.getElementById('loc-2').innerHTML = renderLocation(locs[2], state.fp_player.faction, state.shadow_player.faction, 2);
-  
+  const corruption = ring.corruption;
+  document.getElementById('corruption-track-inner').style.width = (corruption / 30 * 100) + '%';
+  document.getElementById('corruption-value').textContent = corruption + '/30';
+  const corruptionArea = document.getElementById('corruption-area');
+  if (corruption >= 20) corruptionArea.classList.add('corruption-high');
+  else corruptionArea.classList.remove('corruption-high');
+
+  // Heroes
+  renderHeroPanel('fp-hero-panel', fp);
+  renderHeroPanel('sh-hero-panel', sh);
+
+  // Deployment zones
+  // (Extract from board locations — deployment allies not in lane data,
+  //  we'd need the state_exporter to include them separately)
+  renderDeployZone('fp-deploy', [], fp.faction);
+  renderDeployZone('sh-deploy', [], sh.faction);
+
+  // Location lanes
+  const locs = board.locations;
+  renderLane('lane-0', locs[0], fp.faction, sh.faction, fp.hero, sh.hero);
+  renderLane('lane-1', locs[1], fp.faction, sh.faction, fp.hero, sh.hero);
+  renderLane('lane-2', locs[2], fp.faction, sh.faction, fp.hero, sh.hero);
+
+  // Resources
+  renderWillpower('fp-resources', fp);
+  renderWillpower('sh-resources', sh);
+
   // Hands
-  document.getElementById('fp-hand-section').innerHTML = 
-    `<h3>🗡 ${state.fp_player.faction} Hand (${state.fp_player.hand.length})</h3>
-     <div class="hand-cards">${renderHand(state.fp_player.hand, state.fp_player.faction)}</div>`;
-  document.getElementById('sh-hand-section').innerHTML = 
-    `<h3>☠ ${state.shadow_player.faction} Hand (${state.shadow_player.hand.length})</h3>
-     <div class="hand-cards">${renderHand(state.shadow_player.hand, state.shadow_player.faction)}</div>`;
+  renderHand('fp-hand', 'fp-hand-label', fp);
+  renderHand('sh-hand', 'sh-hand-label', sh);
 }
 
 // __GAME_STATE_PLACEHOLDER__
