@@ -82,7 +82,12 @@ namespace LOTRCardGame.Gameplay
         {
             // Auto-setup Gondor vs Mordor for testing
             if (!setupCalled)
+            {
                 Setup();
+                Debug.Log("[GameManager] Auto-starting first turn...");
+                StartTurn();
+                DumpHand();
+            }
         }
 
         // --- Setup ---
@@ -287,6 +292,52 @@ namespace LOTRCardGame.Gameplay
         {
             foreach (var msg in phaseMessages)
                 Debug.Log($"[Phase] {msg}");
+        }
+
+        private void OnGUI()
+        {
+            if (!setupCalled) return;
+
+            float y = 10;
+            GUI.Box(new Rect(10, y, 400, gameOver ? 80 : 180), "");
+            y += 10;
+
+            var style = new GUIStyle(GUI.skin.label);
+            style.fontSize = 16;
+            style.normal.textColor = Color.white;
+
+            var active = GetActivePlayer();
+            GUI.Label(new Rect(20, y, 380, 25), $"Turn {active.turnNumber} — {active.playerName}", style);
+            y += 22;
+
+            var phaseStyle = new GUIStyle(GUI.skin.label);
+            phaseStyle.fontSize = 14;
+            phaseStyle.normal.textColor = currentPhase == GamePhase.Main ? Color.green : Color.yellow;
+            GUI.Label(new Rect(20, y, 380, 20), $"Phase: {currentPhase}  WP: {active.willpowerPool}/{active.EffectiveWillpowerMax}  Hand: {active.hand.Count}", phaseStyle);
+            y += 22;
+
+            var helpStyle = new GUIStyle(GUI.skin.label);
+            helpStyle.fontSize = 11;
+            helpStyle.normal.textColor = Color.gray;
+
+            if (gameOver)
+            {
+                var goStyle = new GUIStyle(GUI.skin.label);
+                goStyle.fontSize = 18;
+                goStyle.normal.textColor = Color.red;
+                GUI.Label(new Rect(20, y, 380, 25), $"GAME OVER — {lossReason}", goStyle);
+                return;
+            }
+
+            if (inputMode == InputMode.Attacking)
+            {
+                GUI.Label(new Rect(20, y, 380, 16), "[ATTACK MODE] Select attacker (1-9) or Esc to cancel", helpStyle);
+                y += 18;
+            }
+
+            GUI.Label(new Rect(20, y, 380, 14), "Space:Start  E:End  H:Hand  B:Board  A:Attack  1-9:Play", helpStyle);
+            y += 16;
+            GUI.Label(new Rect(20, y, 380, 14), $"Influence: FP {fpPlayer.influence}  Shadow {shadowPlayer.influence}  Ring: {ring.GetCorruptionStatus()}", helpStyle);
         }
 
         private void DumpHand()
