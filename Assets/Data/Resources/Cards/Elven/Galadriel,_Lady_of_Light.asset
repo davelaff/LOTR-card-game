@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ac69477f7c75ea46a4ded2a52c4e446, type: 3}
+  m_Name: Galadriel,_Lady_of_Light
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.Data.CardData
+  cardName: Galadriel, Lady of Light
+  faction: 2
+  cardType: 0
+  rarity: 4
+  cost: 0
+  power: 2
+  toughness: 3
+  defense: 0
+  rulesText: 'Mirror of Galadriel: Foresight 3 (look at top 3, draw 1).
+
+    The
+    Light of Earendil: Nazgul allies at this location have -1 Power.'
+  flavorText: '"I pass the test. I will diminish, and go into the West."'
+  creatureTypes:
+  - Elf
+  - Noble
+  keywords:
+  - Foresight
+  cardArt: {fileID: 0}

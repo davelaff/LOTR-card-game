@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ac69477f7c75ea46a4ded2a52c4e446, type: 3}
+  m_Name: The_Dwimmerlaik
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.Data.CardData
+  cardName: The Dwimmerlaik
+  faction: 9
+  cardType: 1
+  rarity: 0
+  cost: 6
+  power: 4
+  toughness: 4
+  defense: 0
+  rulesText: 'Fear 2. Wraith Form. Drain Will: exhaust to permanently -1/-1 to target
+    enemy at location.'
+  flavorText: 
+  creatureTypes:
+  - Nazgul
+  - Wraith
+  keywords:
+  - WraithForm
+  - Fear
+  - Dominate
+  cardArt: {fileID: 0}

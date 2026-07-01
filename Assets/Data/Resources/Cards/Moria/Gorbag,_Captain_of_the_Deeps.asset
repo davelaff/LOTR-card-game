@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ac69477f7c75ea46a4ded2a52c4e446, type: 3}
+  m_Name: Gorbag,_Captain_of_the_Deeps
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.Data.CardData
+  cardName: Gorbag, Captain of the Deeps
+  faction: 7
+  cardType: 0
+  rarity: 4
+  cost: 0
+  power: 3
+  toughness: 4
+  defense: 0
+  rulesText: 'Ambush Commander: Pay 2 WP, put a Goblin from hand into contested location.
+
+    Scavenger:
+    When ally dies at this location, create 1/1 Goblin token.'
+  flavorText: '"What''s this? A fight? Let''s make it a proper one."'
+  creatureTypes:
+  - Orc
+  - Commander
+  keywords:
+  - Ambush
+  cardArt: {fileID: 0}

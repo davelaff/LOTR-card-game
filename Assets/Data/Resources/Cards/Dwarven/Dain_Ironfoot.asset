@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ac69477f7c75ea46a4ded2a52c4e446, type: 3}
+  m_Name: Dain_Ironfoot
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.Data.CardData
+  cardName: Dain Ironfoot
+  faction: 3
+  cardType: 1
+  rarity: 0
+  cost: 5
+  power: 4
+  toughness: 5
+  defense: 0
+  rulesText: 'King Under the Mountain: Search top 7 for 2 Dwarves on enter. Baruk
+    Khazad: exhaust, +1 Power to Dwarves at location.'
+  flavorText: 
+  creatureTypes:
+  - Dwarf
+  - Lord
+  keywords: []
+  cardArt: {fileID: 0}

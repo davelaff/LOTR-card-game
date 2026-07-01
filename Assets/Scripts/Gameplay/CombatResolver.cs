@@ -138,7 +138,9 @@ namespace LOTRCardGame.Gameplay
                 }
 
                 // Resolve on-destroy effects
-                // TODO: EffectResolver.ResolveOnDestroy(targetAlly, attackerPlayer == "fp" ? "shadow" : "fp")
+                string destroyedPlayer = attackerPlayer == "fp" ? "shadow" : "fp";
+                var destroyMsgs = game.effects.ResolveOnDestroy(targetAlly, destroyedPlayer);
+                result.messages.AddRange(destroyMsgs);
 
                 // Handle trample damage to Influence
                 if (excess > 0)

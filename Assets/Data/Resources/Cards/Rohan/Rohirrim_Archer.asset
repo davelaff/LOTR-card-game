@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ac69477f7c75ea46a4ded2a52c4e446, type: 3}
+  m_Name: Rohirrim_Archer
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.Data.CardData
+  cardName: Rohirrim Archer
+  faction: 4
+  cardType: 1
+  rarity: 0
+  cost: 3
+  power: 3
+  toughness: 2
+  defense: 0
+  rulesText: 'Ranged. Death-cry: deal 1 damage to destroyer on death.'
+  flavorText: 
+  creatureTypes:
+  - Man
+  - Archer
+  keywords:
+  - Ranged
+  - DeathCry
+  cardArt: {fileID: 0}

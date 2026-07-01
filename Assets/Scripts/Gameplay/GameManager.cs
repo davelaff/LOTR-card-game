@@ -80,12 +80,67 @@ namespace LOTRCardGame.Gameplay
             effects = new EffectResolver(this);
             events = new EventResolver(this, effects);
 
-            // TODO: Load hero cards from ScriptableObjects, create deck, draw opening hands
-            // TODO: Deploy heroes to board, set initial willpower
+            // --- Card library & deck building ---
+            CardLibrary.Initialize();
+
+            // Load and deploy heroes
+            var fpHero = SetupHero(fpPlayer, fpPlayer.faction, "fp");
+            var shadowHero = SetupHero(shadowPlayer, shadowPlayer.faction, "shadow");
+
+            // Build faction decks (all non-hero cards)
+            fpPlayer.deck = new List<CardData>(CardLibrary.GetDeckCards(fpPlayer.faction));
+            shadowPlayer.deck = new List<CardData>(CardLibrary.GetDeckCards(shadowPlayer.faction));
+
+            // Shuffle and draw opening hands
+            fpPlayer.ShuffleDeck();
+            shadowPlayer.ShuffleDeck();
+            fpPlayer.DrawCards(7);
+            shadowPlayer.DrawCards(7);
+
+            // Willpower: max starts at 0, incremented to 1 on first StartTurn
+            fpPlayer.willpowerMax = 0;
+            shadowPlayer.willpowerMax = 0;
 
             messages.Clear();
             messages.Add("Game setup complete!");
             messages.Add($"{fpName} vs {shadowName}");
+            messages.Add($"Heroes: {fpHero} vs {shadowHero}");
+            messages.Add($"Decks: {fpPlayer.deck.Count} FP, {shadowPlayer.deck.Count} Shadow");
+            messages.Add($"Opening hands: 7 cards each.");
+        }
+
+        /// <summary>
+        /// Load a faction's hero card from the library and deploy it.
+        /// Returns the hero's display name or "None" if no hero found.
+        /// </summary>
+        private string SetupHero(PlayerManager player, Faction faction, string playerId)
+        {
+            CardData heroData = CardLibrary.GetHero(faction);
+            if (heroData == null)
+            {
+                Debug.LogWarning($"[GameManager] No hero found for faction {faction}");
+                player.leaderless = true;
+                return "None";
+            }
+
+            var heroAlly = new BoardAlly
+            {
+                card = heroData,
+                currentToughness = heroData.toughness,
+                turnEntered = 0,
+                tapped = false
+            };
+
+            player.hero = heroAlly;
+
+            // Deploy hero to deployment zone
+            if (playerId == "fp")
+                board.fpDeployment.Add(heroAlly);
+            else
+                board.shadowDeployment.Add(heroAlly);
+
+            player.leaderless = false;
+            return heroData.cardName;
         }
 
         // --- Turn Flow ---
@@ -438,7 +493,40 @@ namespace LOTRCardGame.Gameplay
             return msgs;
         }
 
-        // --- Helpers ---
+        // --- Combat ---
+
+        /// <summary>
+        /// Execute an attack. targetType can be "ally" or "location".
+        /// Returns list of result messages.
+        /// </summary>
+        public List<string> Attack(BoardAlly attacker, string attackerPlayer,
+            object target, string targetType)
+        {
+            var msgs = new List<string>();
+
+            // Validate attacker can attack
+            if (attacker.tapped || attacker.hasAttackedThisTurn)
+            {
+                msgs.Add($"{attacker.card.cardName} cannot attack (already acted this turn)!");
+                return msgs;
+            }
+
+            // Execute combat
+            var result = combat.ResolveAttack(attacker, attackerPlayer, target, targetType);
+            msgs.AddRange(result.messages);
+
+            // Cleanup destroyed ally
+            if (result.targetDestroyed && targetType == "ally")
+            {
+                BoardAlly destroyed = target as BoardAlly;
+                string destroyedPlayer = attackerPlayer == "fp" ? "shadow" : "fp";
+                board.RemoveAlly(destroyed, destroyedPlayer);
+                GetPlayerState(destroyedPlayer).discard.Add(destroyed.card);
+                msgs.Add($"{destroyed.card.cardName} sent to discard.");
+            }
+
+            return msgs;
+        }
 
         public PlayerManager GetActivePlayer()
         {
