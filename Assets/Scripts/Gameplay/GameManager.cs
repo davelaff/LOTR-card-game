@@ -21,6 +21,14 @@ namespace LOTRCardGame.Gameplay
         public BoardManager board;
         public RingManager ring;
 
+        // Resolvers (initialized in Setup)
+        [System.NonSerialized]
+        public CombatResolver combat;
+        [System.NonSerialized]
+        public EffectResolver effects;
+        [System.NonSerialized]
+        public EventResolver events;
+
         [Header("Game State")]
         public GamePhase currentPhase = GamePhase.Start;
         public string activePlayer = "fp"; // Free Peoples always first
@@ -66,6 +74,11 @@ namespace LOTRCardGame.Gameplay
             shadowPlayer.isFreePeoples = false;
 
             board.Initialize();
+
+            // Initialize resolvers
+            combat = new CombatResolver(this);
+            effects = new EffectResolver(this);
+            events = new EventResolver(this, effects);
 
             // TODO: Load hero cards from ScriptableObjects, create deck, draw opening hands
             // TODO: Deploy heroes to board, set initial willpower
@@ -311,14 +324,16 @@ namespace LOTRCardGame.Gameplay
                     if (ally.HasAmbush)
                         msgs.Add("Ambush: can deploy directly to contested location (auto for AI).");
 
-                    // TODO: Resolve on-enter effects via EffectResolver (step 4)
+                    // Resolve on-enter effects
+                    var enterMsgs = effects.ResolveOnEnter(ally, player);
+                    msgs.AddRange(enterMsgs);
                     break;
 
                 case CardType.Event:
-                    // TODO: Resolve event via EventResolver (step 4)
-                    // For now: events go directly to discard
+                    // Resolve event via EventResolver
+                    var eventMsgs = events.ResolveEvent(card, player);
+                    msgs.AddRange(eventMsgs);
                     playerState.discard.Add(card);
-                    msgs.Add($"{card.cardName} resolves and goes to discard.");
                     break;
 
                 case CardType.Artifact:
