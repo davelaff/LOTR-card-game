@@ -45,6 +45,7 @@ namespace LOTRCardGame.Gameplay
         private enum InputMode { Normal, Attacking }
         private InputMode inputMode = InputMode.Normal;
         private List<BoardAlly> availableAttackers = new List<BoardAlly>();
+        private int lastInputFrame = -999;
 
         // --- Singleton ---
 
@@ -298,8 +299,13 @@ namespace LOTRCardGame.Gameplay
         {
             if (!setupCalled) return;
 
+            // Detect any keyboard input via IMGUI event system
+            Event e = Event.current;
+            if (e.type == EventType.KeyDown)
+                lastInputFrame = Time.frameCount;
+
             float y = 10;
-            GUI.Box(new Rect(10, y, 400, gameOver ? 80 : 180), "");
+            GUI.Box(new Rect(10, y, 400, gameOver ? 80 : 200), "");
             y += 10;
 
             var style = new GUIStyle(GUI.skin.label);
@@ -338,6 +344,16 @@ namespace LOTRCardGame.Gameplay
             GUI.Label(new Rect(20, y, 380, 14), "Space:Start  E:End  H:Hand  B:Board  A:Attack  1-9:Play", helpStyle);
             y += 16;
             GUI.Label(new Rect(20, y, 380, 14), $"Influence: FP {fpPlayer.influence}  Shadow {shadowPlayer.influence}  Ring: {ring.GetCorruptionStatus()}", helpStyle);
+            y += 18;
+
+            // Focus nag: show if no input detected for 3 seconds
+            if (Time.frameCount - lastInputFrame > 180)
+            {
+                var focusStyle = new GUIStyle(GUI.skin.label);
+                focusStyle.fontSize = 14;
+                focusStyle.normal.textColor = Color.red;
+                GUI.Label(new Rect(20, y, 380, 20), "⬆ CLICK THE GAME VIEW TO PLAY ⬆", focusStyle);
+            }
         }
 
         private void DumpHand()
