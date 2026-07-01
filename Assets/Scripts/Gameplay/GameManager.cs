@@ -41,6 +41,11 @@ namespace LOTRCardGame.Gameplay
         public List<string> messages = new List<string>();
         public List<string> phaseMessages = new List<string>();
 
+        // Input mode state
+        private enum InputMode { Normal, Attacking }
+        private InputMode inputMode = InputMode.Normal;
+        private List<BoardAlly> availableAttackers = new List<BoardAlly>();
+
         // --- Singleton ---
 
         private void Awake()
@@ -177,23 +182,60 @@ namespace LOTRCardGame.Gameplay
             return heroData.cardName;
         }
 
-        // --- Test Input ---
+        // --- Player Input ---
 
         private void Update()
         {
             if (!setupCalled || gameOver) return;
 
+            // Esc always cancels input mode
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (inputMode != InputMode.Normal)
+                {
+                    inputMode = InputMode.Normal;
+                    Debug.Log("[Input] Canceled.");
+                }
+                return;
+            }
+
+            // Attacking mode: select attacker by number
+            if (inputMode == InputMode.Attacking)
+            {
+                for (int k = (int)KeyCode.Alpha1; k <= (int)KeyCode.Alpha9; k++)
+                {
+                    if (Input.GetKeyDown((KeyCode)k))
+                    {
+                        int idx = k - (int)KeyCode.Alpha1;
+                        if (idx < availableAttackers.Count)
+                        {
+                            ExecuteAttack(availableAttackers[idx]);
+                            inputMode = InputMode.Normal;
+                        }
+                        else
+                        {
+                            Debug.Log($"[Attack] Invalid index {idx + 1}. Esc to cancel.");
+                        }
+                        return;
+                    }
+                }
+                return; // ignore all other keys in attack mode
+            }
+
+            // Normal mode
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 if (currentPhase == GamePhase.Start || currentPhase == GamePhase.End)
                 {
                     StartTurn();
+                    DumpHand(); // show hand automatically at turn start
                     DumpPhase();
                 }
                 else
                 {
-                    Debug.Log($"[Input] Already in {currentPhase} phase — press E to end turn.");
+                    Debug.Log($"[Input] Already in {currentPhase} phase. Press E to end turn.");
                 }
+                return;
             }
 
             if (Input.GetKeyDown(KeyCode.E))
@@ -205,15 +247,237 @@ namespace LOTRCardGame.Gameplay
                 }
                 else
                 {
-                    Debug.Log($"[Input] Not in Main phase — press Space to start a turn.");
+                    Debug.Log($"[Input] Not in Main phase. Press Space to start a turn.");
+                }
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.H))
+            {
+                DumpHand();
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                DumpBoard();
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                EnterAttackMode();
+                return;
+            }
+
+            // 1-9: play card from hand
+            for (int k = (int)KeyCode.Alpha1; k <= (int)KeyCode.Alpha9; k++)
+            {
+                if (Input.GetKeyDown((KeyCode)k))
+                {
+                    PlayCardFromHand(k - (int)KeyCode.Alpha1);
+                    return;
                 }
             }
         }
+
+        // --- Console Output ---
 
         private void DumpPhase()
         {
             foreach (var msg in phaseMessages)
                 Debug.Log($"[Phase] {msg}");
+        }
+
+        private void DumpHand()
+        {
+            PlayerManager active = GetActivePlayer();
+            Debug.Log($"[Hand] {active.playerName} ({active.hand.Count} cards, WP: {active.willpowerPool}/{active.EffectiveWillpowerMax}):");
+            for (int i = 0; i < active.hand.Count; i++)
+            {
+                var c = active.hand[i];
+                Debug.Log($"  [{i + 1}] {c.DisplayName}  Cost: {c.cost} WP  Type: {c.cardType}");
+            }
+        }
+
+        private void DumpBoard()
+        {
+            Debug.Log("[Board] ========================================");
+            Debug.Log($"[Board] Active: {GetActivePlayer().playerName}  Phase: {currentPhase}");
+            Debug.Log($"[Board] Influence: FP {fpPlayer.influence}  Shadow {shadowPlayer.influence}");
+            Debug.Log($"[Board] Ring: {ring.GetCorruptionStatus()}");
+
+            for (int i = 0; i < board.locations.Count; i++)
+            {
+                var loc = board.locations[i];
+                string locName = loc.IsEmpty ? "Empty" : loc.locationCard.cardName;
+                string ctrl = loc.IsEmpty ? "-" : (loc.controller == "fp" ? "FP" : "Shadow");
+                string def = loc.IsEmpty ? "-" : $"{loc.currentDefense}";
+                Debug.Log($"[Board] Loc {i + 1}: {locName} ({ctrl}) Def:{def}");
+
+                var fpFront = loc.GetFrontLine("fp");
+                var fpBack = loc.GetBackLine("fp");
+                var shFront = loc.GetFrontLine("shadow");
+                var shBack = loc.GetBackLine("shadow");
+
+                foreach (var a in fpFront)
+                    Debug.Log($"  FP Front: {a.card.cardName} (Tgh:{a.currentToughness}/{a.card.toughness} Pwr:{a.EffectivePower}){(a.tapped ? " [TAPPED]" : "")}");
+                foreach (var a in fpBack)
+                    Debug.Log($"  FP Back:  {a.card.cardName} (Tgh:{a.currentToughness}/{a.card.toughness} Pwr:{a.EffectivePower}){(a.tapped ? " [TAPPED]" : "")}");
+                foreach (var a in shFront)
+                    Debug.Log($"  SH Front: {a.card.cardName} (Tgh:{a.currentToughness}/{a.card.toughness} Pwr:{a.EffectivePower}){(a.tapped ? " [TAPPED]" : "")}");
+                foreach (var a in shBack)
+                    Debug.Log($"  SH Back:  {a.card.cardName} (Tgh:{a.currentToughness}/{a.card.toughness} Pwr:{a.EffectivePower}){(a.tapped ? " [TAPPED]" : "")}");
+            }
+
+            // Deployment zones
+            Debug.Log("[Board] --- Deployment ---");
+            foreach (var a in board.fpDeployment)
+                Debug.Log($"  FP: {a.card.cardName} (Tgh:{a.currentToughness}/{a.card.toughness}){(a.tapped ? " [TAPPED]" : "")}");
+            foreach (var a in board.shadowDeployment)
+                Debug.Log($"  SH: {a.card.cardName} (Tgh:{a.currentToughness}/{a.card.toughness}){(a.tapped ? " [TAPPED]" : "")}");
+
+            // Heroes
+            if (fpPlayer.hero != null)
+                Debug.Log($"[Board] FP Hero: {fpPlayer.hero.card.cardName} (Tgh:{fpPlayer.hero.currentToughness}/{fpPlayer.hero.card.toughness}){(fpPlayer.hero.tapped ? " [TAPPED]" : "")}");
+            if (shadowPlayer.hero != null)
+                Debug.Log($"[Board] SH Hero: {shadowPlayer.hero.card.cardName} (Tgh:{shadowPlayer.hero.currentToughness}/{shadowPlayer.hero.card.toughness}){(shadowPlayer.hero.tapped ? " [TAPPED]" : "")}");
+            Debug.Log("[Board] ========================================");
+        }
+
+        // --- Card Play Input ---
+
+        private void PlayCardFromHand(int index)
+        {
+            if (currentPhase != GamePhase.Main)
+            {
+                Debug.Log("[Input] Can only play cards during Main phase.");
+                return;
+            }
+
+            PlayerManager active = GetActivePlayer();
+            if (index < 0 || index >= active.hand.Count)
+            {
+                Debug.Log($"[Input] Invalid card index {index + 1}. Hand has {active.hand.Count} cards. Press H to see hand.");
+                return;
+            }
+
+            CardData card = active.hand[index];
+            var results = PlayCard(card, activePlayer);
+            foreach (var msg in results)
+                Debug.Log($"[PlayCard] {msg}");
+
+            // If card was an ally, show board
+            if (card.cardType == CardType.Ally)
+                DumpBoard();
+        }
+
+        // --- Attack Input ---
+
+        private void EnterAttackMode()
+        {
+            if (currentPhase != GamePhase.Main)
+            {
+                Debug.Log("[Input] Can only attack during Main phase.");
+                return;
+            }
+
+            availableAttackers.Clear();
+            string enemyId = activePlayer == "fp" ? "shadow" : "fp";
+
+            // Collect all untapped allies at locations that have enemy targets
+            for (int locIdx = 0; locIdx < board.locations.Count; locIdx++)
+            {
+                var loc = board.locations[locIdx];
+                var enemies = loc.GetAllies(enemyId);
+                if (enemies.Count == 0 && (loc.IsEmpty || loc.controller == activePlayer))
+                    continue; // no one to attack here
+
+                foreach (var ally in loc.GetAllies(activePlayer))
+                {
+                    if (!ally.tapped && !ally.hasAttackedThisTurn)
+                        availableAttackers.Add(ally);
+                }
+            }
+
+            // Include hero if at a location
+            PlayerManager active = GetActivePlayer();
+            if (active.hero != null && active.hero.IsAlive && !active.hero.tapped && !active.hero.hasAttackedThisTurn)
+            {
+                int? heroLoc = board.FindAllyLocation(active.hero, activePlayer);
+                if (heroLoc != null && heroLoc >= 0)
+                    availableAttackers.Add(active.hero);
+            }
+
+            if (availableAttackers.Count == 0)
+            {
+                Debug.Log("[Attack] No available attackers. Move allies to locations first.");
+                return;
+            }
+
+            inputMode = InputMode.Attacking;
+            Debug.Log($"[Attack] Select attacker (1-{availableAttackers.Count}):");
+            for (int i = 0; i < availableAttackers.Count; i++)
+            {
+                var a = availableAttackers[i];
+                int? atLoc = board.FindAllyLocation(a, activePlayer);
+                string locStr = atLoc >= 0 ? $"Loc {atLoc.Value + 1}" : "Dep";
+                Debug.Log($"  [{i + 1}] {a.card.cardName} ({locStr})  Pwr:{a.EffectivePower}  Tgh:{a.currentToughness}");
+            }
+            Debug.Log("[Attack] Esc to cancel.");
+        }
+
+        private void ExecuteAttack(BoardAlly attacker)
+        {
+            string enemyId = activePlayer == "fp" ? "shadow" : "fp";
+            int? attackerLoc = board.FindAllyLocation(attacker, activePlayer);
+
+            if (attackerLoc == null || attackerLoc < 0)
+            {
+                Debug.Log($"[Attack] {attacker.card.cardName} is not at a location. Move first.");
+                return;
+            }
+
+            LocationSlot loc = board.GetLocation(attackerLoc.Value);
+            var enemies = loc.GetAllies(enemyId);
+
+            BoardAlly target = null;
+            string targetType = "ally_front";
+
+            // Prioritize front line enemies, then back line
+            var frontEnemies = loc.GetFrontLine(enemyId);
+            if (frontEnemies.Count > 0)
+            {
+                target = frontEnemies[0];
+                targetType = "ally_front";
+            }
+            else
+            {
+                var backEnemies = loc.GetBackLine(enemyId);
+                if (backEnemies.Count > 0)
+                {
+                    target = backEnemies[0];
+                    targetType = "ally_back";
+                }
+                else if (!loc.IsEmpty && loc.controller != activePlayer)
+                {
+                    // Attack the location itself
+                    var results = Attack(attacker, activePlayer, loc, "location");
+                    foreach (var msg in results)
+                        Debug.Log($"[Attack] {msg}");
+                    return;
+                }
+                else
+                {
+                    Debug.Log($"[Attack] No valid targets at Location {attackerLoc.Value + 1}.");
+                    return;
+                }
+            }
+
+            Debug.Log($"[Attack] {attacker.card.cardName} → {target.card.cardName}!");
+            var atkResults = Attack(attacker, activePlayer, target, targetType);
+            foreach (var msg in atkResults)
+                Debug.Log($"[Attack] {msg}");
         }
 
         // --- Turn Flow ---
