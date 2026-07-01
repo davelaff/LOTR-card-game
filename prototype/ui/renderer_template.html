@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>LOTR Card Battle</title>
+<style>
+/* ═══════════════════════════════════════════════
+   THE LORD OF THE RINGS · DIGITAL CARD BATTLE
+   Hearthstone-inspired board layout
+   ═══════════════════════════════════════════════ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+@font-face {
+  font-family: 'Ringbearer';
+  src: local('Georgia'), local('Times New Roman');
+}
+
+body {
+  font-family: 'Ringbearer', 'Georgia', serif;
+  background: #0a0a12;
+  color: #d4c9a0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ═══════════════════════════════════════════════
+   STONE TABLETOP — the entire game surface
+   ═══════════════════════════════════════════════ */
+#tabletop {
+  width: 1240px;
+  min-height: 100vh;
+  background: 
+    /* Stone texture via layered gradients */
+    radial-gradient(ellipse at 20% 50%, rgba(80,70,50,0.3) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 30%, rgba(60,50,40,0.25) 0%, transparent 50%),
+    linear-gradient(180deg, #1a1814 0%, #242018 30%, #1e1c16 60%, #181612 100%);
+  border-left: 4px solid #3a3020;
+  border-right: 4px solid #3a3020;
+  box-shadow: 
+    inset 0 0 200px rgba(0,0,0,0.5),
+    0 0 60px rgba(0,0,0,0.8);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle stone grain */
+#tabletop::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.3; pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════
+   HEADER — title, ring, turn info
+   ═══════════════════════════════════════════════ */
+#header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.6), transparent);
+  border-bottom: 1px solid rgba(201,169,110,0.2);
+  position: relative; z-index: 1;
+}
+
+#title-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#title-text {
+  font-size: 18px;
+  font-weight: bold;
+  color: #c9a96e;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 20px rgba(201,169,110,0.4);
+}
+
+#title-ring {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid #c9a96e;
+  background: radial-gradient(circle at 35% 35%, #ffd700, #8b6914, #4a3000);
+  box-shadow: 0 0 15px rgba(201,169,110,0.5), inset 0 0 8px rgba(255,215,0,0.3);
+  animation: ringPulse 3s infinite;
+}
+
+#turn-info {
+  font-size: 13px;
+  color: #c9a96e;
+  text-align: right;
+}
+#turn-info .phase { color: #8a8a7a; font-size: 11px; }
+
+/* Ring corruption bar */
+#corruption-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#corruption-track-outer {
+  width: 200px; height: 12px;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid #2a1510;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.8);
+}
+
+#corruption-track-inner {
+  height: 100%;
+  background: linear-gradient(90deg, #1a0800, #4a1500, #8b0000, #cc1111);
+  transition: width 0.6s ease;
+  border-radius: 5px;
+  box-shadow: inset 0 1px 2px rgba(255,100,0,0.3);
+}
+
+.corruption-high #corruption-track-inner {
+  background: linear-gradient(90deg, #5a0000, #aa0000, #ff0000, #ff4400);
+  box-shadow: 0 0 12px rgba(255,0,0,0.5), inset 0 1px 2px rgba(255,100,0,0.3);
+}
+
+#corruption-value {
+  font-size: 13px;
+  font-weight: bold;
+  color: #c9a96e;
+  min-width: 50px;
+  text-align: right;
+}
+
+/* ═══════════════════════════════════════════════
+   MAIN BOARD — 3 location lanes
+   ═══════════════════════════════════════════════ */
+#board-area {
+  display: flex;
+  padding: 12px 16px;
+  gap: 10px;
+  flex: 1;
+  position: relative; z-index: 1;
+}
+
+/* ── Hero portraits at edges ── */
+.hero-panel {
+  width: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-frame {
+  width: 90px;
+  height: 120px;
+  border-radius: 6px;
+  border: 3px solid;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+
+.hero-frame-fp {
+  background: linear-gradient(135deg, #1a3050, #284878);
+  border-color: #5a9acc;
+}
+
+.hero-frame-sh {
+  background: linear-gradient(135deg, #3d1010, #5a1818);
+  border-color: #cc5a5a;
+}
+
+.hero-art {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; color: rgba(255,255,255,0.3);
+  text-align: center;
+  padding: 4px;
+}
+
+.hero-name {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(0,0,0,0.8);
+  padding: 2px 4px;
+  font-size: 8px;
+  font-weight: bold;
+  text-align: center;
+  color: #c9a96e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hero-power-icon {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid #c9a96e;
+  background: #1a1a2e;
+  color: #c9a96e;
+  font-size: 9px;
+  font-weight: bold;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.hero-toughness-icon {
+  position: absolute;
+  top: 3px; right: 3px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid #cc3333;
+  background: #1a1a2e;
+  color: #ff6666;
+  font-size: 9px;
+  font-weight: bold;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.hero-tapped {
+  opacity: 0.5;
+  filter: grayscale(40%);
+}
+
+.hero-tapped::after {
+  content: '⏳';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  color: rgba(255,255,255,0.5);
+}
+
+/* Influence (health) display */
+.influence-display {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.influence-icon {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ff4444, #8b0000);
+  border: 1px solid #cc3333;
+  box-shadow: 0 0 8px rgba(255,0,0,0.3);
+}
+
+.influence-value { color: #ff6666; }
+.influence-max { color: #6a4a4a; font-size: 9px; }
+
+/* ── Location lanes ── */
+.location-lane {
+  flex: 1;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid #2a2518;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: border-color 0.4s, box-shadow 0.4s;
+}
+
+.location-lane.contested {
+  border-color: rgba(201,169,110,0.5);
+  box-shadow: 0 0 20px rgba(201,169,110,0.15), inset 0 0 30px rgba(201,169,110,0.05);
+}
+
+.location-header {
+  padding: 6px 8px;
+  font-size: 11px;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.location-fp { background: rgba(30,60,100,0.4); color: #7eb8da; }
+.location-shadow { background: rgba(80,20,20,0.4); color: #da7e7e; }
+.location-neutral { background: rgba(40,40,40,0.4); color: #8a8a8a; }
+
+.location-defense {
+  font-size: 9px;
+  opacity: 0.7;
+  margin-left: 6px;
+}
+
+/* ── Rows within a location ── */
+.unit-row {
+  display: flex;
+  gap: 3px;
+  justify-content: center;
+  padding: 4px 6px;
+  min-height: 52px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.fp-zone { border-bottom: 1px dotted rgba(100,150,200,0.15); }
+.sh-zone { border-top: 1px dotted rgba(200,100,100,0.15); }
+
+/* ── Mini cards (board units) ── */
+.unit-card {
+  width: 82px;
+  height: 46px;
+  border-radius: 4px;
+  border: 2px solid;
+  position: relative;
+  font-size: 9px;
+  transition: transform 0.15s, box-shadow 0.15s;
+  overflow: hidden;
+  cursor: default;
+}
+
+.unit-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.5);
+}
+
+.unit-tapped { opacity: 0.45; filter: grayscale(30%); }
+
+.unit-power {
+  position: absolute;
+  bottom: 2px; left: 4px;
+  font-size: 12px; font-weight: bold;
+  color: #ffd700;
+  text-shadow: 0 0 4px rgba(0,0,0,0.8);
+}
+
+.unit-health {
+  position: absolute;
+  bottom: 2px; right: 4px;
+  font-size: 12px; font-weight: bold;
+  color: #ff4444;
+  text-shadow: 0 0 4px rgba(0,0,0,0.8);
+}
+
+.unit-name {
+  position: absolute;
+  top: 2px; left: 4px; right: 4px;
+  font-size: 7.5px; font-weight: bold;
+  color: #e8dcc8;
+  text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.unit-creature {
+  position: absolute;
+  top: 14px; left: 4px; right: 4px;
+  font-size: 6.5px;
+  color: rgba(255,255,255,0.4);
+  text-align: center;
+}
+
+/* Hero unit is slightly larger */
+.unit-hero {
+  width: 90px; height: 52px;
+  border-width: 3px;
+}
+
+/* Keywords on card */
+.unit-keywords {
+  position: absolute;
+  bottom: 16px; left: 4px; right: 4px;
+  font-size: 6px;
+  color: rgba(255,200,100,0.6);
+  text-align: center;
+  white-space: nowrap; overflow: hidden;
+}
+
+/* Faction-specific card gradients */
+.card-gondor { background: linear-gradient(135deg, #152840, #1e3a5f, #284a70); border-color: #5a9acc; }
+.card-mordor { background: linear-gradient(135deg, #2a0a0a, #3d1010, #5a1818); border-color: #cc5a5a; }
+.card-elven { background: linear-gradient(135deg, #122a1a, #1a3a2a, #285a3a); border-color: #5acc7e; }
+.card-dwarven { background: linear-gradient(135deg, #302018, #4a3020, #604528); border-color: #c9a060; }
+.card-rohan { background: linear-gradient(135deg, #283812, #3d5a1e, #506e2a); border-color: #a8c84e; }
+.card-hobbit { background: linear-gradient(135deg, #3a2a14, #5a4a2a, #7a5a30); border-color: #8db600; }
+.card-isengard { background: linear-gradient(135deg, #303030, #4a4a4a, #606060); border-color: #cccccc; }
+.card-moria { background: linear-gradient(135deg, #1a1010, #2a1a1a, #4a2828); border-color: #8b4040; }
+.card-harad { background: linear-gradient(135deg, #3a2010, #5a3420, #804828); border-color: #e0b040; }
+.card-nazgul { background: linear-gradient(135deg, #0a0a10, #1a1020, #2a1830); border-color: #7a3a9a; }
+
+/* ═══════════════════════════════════════════════
+   DEPLOYMENT ZONES
+   ═══════════════════════════════════════════════ */
+.deploy-zone {
+  width: 100px;
+  background: rgba(201,169,110,0.04);
+  border: 1px dashed rgba(201,169,110,0.2);
+  border-radius: 6px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.deploy-label {
+  font-size: 8px;
+  color: rgba(201,169,110,0.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.deploy-ally {
+  width: 76px;
+  height: 42px;
+  border-radius: 3px;
+  border: 1px solid;
+  position: relative;
+  font-size: 8px;
+}
+
+.deploy-ally .unit-power { font-size: 10px; }
+.deploy-ally .unit-health { font-size: 10px; }
+.deploy-ally .unit-name { font-size: 7px; }
+
+.empty-slot {
+  width: 82px; height: 46px;
+  border: 1px dashed rgba(255,255,255,0.08);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.12);
+  font-size: 7px;
+}
+
+/* ═══════════════════════════════════════════════
+   RESOURCE BAR (willpower, deck)
+   ═══════════════════════════════════════════════ */
+#resource-bar {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 20px;
+  border-top: 1px solid rgba(201,169,110,0.15);
+  position: relative; z-index: 1;
+}
+
+.resource-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.willpower-gems {
+  display: flex;
+  gap: 2px;
+}
+
+.wp-gem {
+  width: 14px; height: 14px;
+  border-radius: 3px;
+  border: 1px solid;
+}
+
+.wp-gem-filled {
+  background: radial-gradient(circle at 30% 30%, #7ad4ff, #2a90cc, #0a4060);
+  border-color: #5ac0ee;
+  box-shadow: 0 0 8px rgba(74,201,255,0.5), inset 0 1px 3px rgba(255,255,255,0.3);
+}
+
+.wp-gem-empty {
+  background: rgba(10,20,30,0.5);
+  border-color: #1a3040;
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
+}
+
+.stat-label { font-size: 10px; color: #6a6a6a; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-value { font-size: 13px; font-weight: bold; color: #c9a96e; }
+
+/* ═══════════════════════════════════════════════
+   HAND DISPLAY
+   ═══════════════════════════════════════════════ */
+#hand-area {
+  padding: 8px 20px 12px;
+  position: relative; z-index: 1;
+}
+
+.hand-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.hand-label {
+  font-size: 9px;
+  color: rgba(201,169,110,0.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.hand-card {
+  width: 110px;
+  height: 74px;
+  border-radius: 5px;
+  border: 2px solid;
+  position: relative;
+  font-size: 9px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  overflow: hidden;
+}
+
+.hand-card:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 8px 24px rgba(201,169,110,0.3);
+  z-index: 20;
+}
+
+.hand-cost {
+  position: absolute;
+  top: 4px; left: 4px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #2a3050, #0a0a1a);
+  border: 2px solid #4ac9ff;
+  color: #4ac9ff;
+  font-size: 11px; font-weight: bold;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 8px rgba(74,201,255,0.3);
+}
+
+.hand-type {
+  position: absolute;
+  top: 6px; right: 6px;
+  font-size: 7px;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hand-stats {
+  position: absolute;
+  bottom: 16px; left: 0; right: 0;
+  display: flex; justify-content: space-around;
+  font-size: 13px; font-weight: bold;
+}
+
+.hand-stat-power { color: #ffd700; text-shadow: 0 0 3px rgba(0,0,0,0.8); }
+.hand-stat-health { color: #ff4444; text-shadow: 0 0 3px rgba(0,0,0,0.8); }
+
+.hand-name {
+  position: absolute;
+  bottom: 2px; left: 4px; right: 4px;
+  font-size: 7.5px; font-weight: bold;
+  color: #e8dcc8;
+  text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.hand-rules {
+  position: absolute;
+  top: 28px; left: 6px; right: 6px;
+  font-size: 6.5px;
+  color: rgba(255,255,255,0.35);
+  text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Event/artifact cards in hand — no stats */
+.hand-card-event .hand-stats { display: none; }
+
+/* ═══════════════════════════════════════════════
+   FOOTER — phase indicator
+   ═══════════════════════════════════════════════ */
+#footer {
+  padding: 6px 20px;
+  text-align: center;
+  border-top: 1px solid rgba(201,169,110,0.1);
+  font-size: 10px;
+  color: rgba(201,169,110,0.4);
+  position: relative; z-index: 1;
+}
+
+/* ── Animations ── */
+@keyframes ringPulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(201,169,110,0.5), inset 0 0 8px rgba(255,215,0,0.3); }
+  50% { box-shadow: 0 0 30px rgba(201,169,110,0.9), inset 0 0 14px rgba(255,215,0,0.5); }
+}
+
+@keyframes contestedGlow {
+  0%, 100% { border-color: rgba(201,169,110,0.35); }
+  50% { border-color: rgba(201,169,110,0.65); }
+}
+
+.location-lane.contested { animation: contestedGlow 2s infinite; }
+</style>
+</head>
+<body>
+<div id="tabletop">
+
+<div id="header">
+  <div id="title-area">
+    <div id="title-ring"></div>
+    <div>
+      <div id="title-text">THE LORD OF THE RINGS</div>
+      <div style="font-size:9px;color:rgba(201,169,110,0.4);letter-spacing:1px;">DIGITAL CARD BATTLE</div>
+    </div>
+  </div>
+  <div id="corruption-area">
+    <span style="font-size:9px;color:rgba(201,169,110,0.5);">CORRUPTION</span>
+    <div id="corruption-track-outer"><div id="corruption-track-inner"></div></div>
+    <div id="corruption-value">0/30</div>
+  </div>
+  <div id="turn-info">
+    <div>Turn <span id="turn-num">1</span></div>
+    <div class="phase" id="phase-text">Main Phase</div>
+  </div>
+</div>
+
+<div id="board-area">
+  <!-- FP Hero Panel -->
+  <div class="hero-panel" id="fp-hero-panel"></div>
+
+  <!-- FP Deployment -->
+  <div class="deploy-zone" id="fp-deploy"></div>
+
+  <!-- 3 Location Lanes -->
+  <div class="location-lane" id="lane-0"></div>
+  <div class="location-lane" id="lane-1"></div>
+  <div class="location-lane" id="lane-2"></div>
+
+  <!-- SH Deployment -->
+  <div class="deploy-zone" id="sh-deploy"></div>
+
+  <!-- SH Hero Panel -->
+  <div class="hero-panel" id="sh-hero-panel"></div>
+</div>
+
+<div id="resource-bar">
+  <div class="resource-group" id="fp-resources"></div>
+  <div class="resource-group" id="sh-resources"></div>
+</div>
+
+<div id="hand-area">
+  <div class="hand-label" style="text-align:left;" id="fp-hand-label"></div>
+  <div class="hand-row" id="fp-hand"></div>
+  <div class="hand-label" style="text-align:right;" id="sh-hand-label"></div>
+  <div class="hand-row" id="sh-hand"></div>
+</div>
+
+<div id="footer">
+  ♜ THE LORD OF THE RINGS · Digital Card Battle · Alpha · ♜
+</div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// RENDER ENGINE
+// ═══════════════════════════════════════════════
+
+const FACTION_CLASS = {
+  'Gondor':'gondor','Mordor':'mordor','Elven':'elven','Dwarven':'dwarven',
+  'Rohan':'rohan','Hobbit':'hobbit','Isengard':'isengard','Moria':'moria',
+  'Harad':'harad','Nazgul':'nazgul'
+};
+
+function parseUnit(str) {
+  // "Name(P/T)" or just "Name" or ""
+  if (!str) return null;
+  const m = str.match(/^(.+?)\((\d+)\/(\d+)\)$/);
+  return m ? { name: m[1].trim(), power: parseInt(m[2]), health: parseInt(m[3]) } : { name: str };
+}
+
+function isHeroUnit(name, heroData) {
+  return heroData && name === heroData.name;
+}
+
+function unitHTML(unit, faction, heroData, isHeroCard) {
+  if (!unit) return '<div class="empty-slot">—</div>';
+  const cls = FACTION_CLASS[faction] || 'gondor';
+  const heroClass = isHeroCard ? ' unit-hero' : '';
+  
+  return `<div class="unit-card card-${cls}${heroClass}">
+    <div class="unit-name">${unit.name}</div>
+    ${unit.power != null ? `<div class="unit-power">${unit.power}</div>` : ''}
+    ${unit.health != null ? `<div class="unit-health">${unit.health}</div>` : ''}
+  </div>`;
+}
+
+function renderHeroPanel(panelId, playerData) {
+  const panel = document.getElementById(panelId);
+  const hero = playerData.hero;
+  const faction = playerData.faction;
+  const cls = FACTION_CLASS[faction] || 'gondor';
+  const tappedClass = hero && hero.tapped ? ' hero-tapped' : '';
+  const isFp = panelId.includes('fp');
+
+  let html = '';
+  if (hero) {
+    const artStyle = hero.img 
+      ? `style="background-image:url('${hero.img}');background-size:cover;background-position:center top;"` 
+      : '';
+    html += `<div class="hero-frame hero-frame-${isFp ? 'fp' : 'sh'}${tappedClass}" ${artStyle}>
+      ${!hero.img ? `<div class="hero-art">${faction}<br>HERO</div>` : ''}
+      <div class="hero-power-icon">${hero.power}</div>
+      <div class="hero-toughness-icon">${hero.toughness}</div>
+      <div class="hero-name">${hero.name}</div>
+    </div>`;
+  }
+  // Influence display
+  html += `<div class="influence-display">
+    <div class="influence-icon"></div>
+    <span class="influence-value">${playerData.influence}</span>
+    <span class="influence-max">/30</span>
+  </div>`;
+  panel.innerHTML = html;
+}
+
+function renderDeployZone(zoneId, allies, faction) {
+  const zone = document.getElementById(zoneId);
+  const cls = FACTION_CLASS[faction] || 'gondor';
+  let html = `<div class="deploy-label">${zoneId.includes('fp') ? '🗡' : '☠'} DEPLOYMENT</div>`;
+  if (allies.length === 0) {
+    html += '<div class="empty-slot" style="width:76px;height:42px;">Empty</div>';
+  } else {
+    allies.forEach(a => {
+      html += `<div class="deploy-ally card-${cls}">
+        <div class="unit-name">${a.name}</div>
+        ${a.power != null ? `<div class="unit-power">${a.power}</div>` : ''}
+        ${a.health != null ? `<div class="unit-health">${a.health}</div>` : ''}
+      </div>`;
+    });
+  }
+  zone.innerHTML = html;
+}
+
+function renderLane(laneId, locData, fpFaction, shFaction, fpHero, shHero) {
+  const lane = document.getElementById(laneId);
+  const name = locData.name;
+  const def = locData.defense || 0;
+  const ctrl = locData.controller;
+
+  let headerCls = 'location-neutral';
+  let ctrlLabel = 'Neutral';
+  if (ctrl === 'fp') { headerCls = 'location-fp'; ctrlLabel = 'Free Peoples'; }
+  if (ctrl === 'shadow') { headerCls = 'location-shadow'; ctrlLabel = 'Shadow'; }
+
+  // Check if contested (both sides have units)
+  const hasFP = locData.fp_front.length + locData.fp_back.length > 0;
+  const hasSH = locData.shadow_front.length + locData.shadow_back.length > 0;
+  if (hasFP && hasSH) lane.classList.add('contested');
+  else lane.classList.remove('contested');
+
+  let html = `<div class="location-header ${headerCls}">
+    ${name} <span class="location-defense">· ${def} Def</span>
+    <span style="font-size:8px;opacity:0.5;margin-left:4px;">${ctrlLabel}</span>
+  </div>`;
+
+  // FP front row
+  html += '<div class="unit-row fp-zone">';
+  locData.fp_front.forEach(u => {
+    const unit = parseUnit(u);
+    html += unit ? unitHTML(unit, fpFaction, fpHero, isHeroUnit(unit.name, fpHero)) : '';
+  });
+  if (locData.fp_front.length === 0) html += '<div class="empty-slot" style="width:82px;height:46px;">front</div>';
+  html += '</div>';
+
+  // FP back row
+  html += '<div class="unit-row fp-zone" style="border-bottom:none;">';
+  locData.fp_back.forEach(u => {
+    const unit = parseUnit(u);
+    html += unit ? unitHTML(unit, fpFaction, fpHero, false) : '';
+  });
+  if (locData.fp_back.length === 0) html += '<div class="empty-slot" style="width:82px;height:46px;">back</div>';
+  html += '</div>';
+
+  // Divider
+  html += '<div style="border-top:2px solid rgba(201,169,110,0.15);margin:4px 8px;"></div>';
+
+  // SH back row
+  html += '<div class="unit-row sh-zone" style="border-top:none;">';
+  locData.shadow_back.forEach(u => {
+    const unit = parseUnit(u);
+    html += unit ? unitHTML(unit, shFaction, shHero, false) : '';
+  });
+  if (locData.shadow_back.length === 0) html += '<div class="empty-slot" style="width:82px;height:46px;">back</div>';
+  html += '</div>';
+
+  // SH front row
+  html += '<div class="unit-row sh-zone">';
+  locData.shadow_front.forEach(u => {
+    const unit = parseUnit(u);
+    html += unit ? unitHTML(unit, shFaction, shHero, isHeroUnit(unit.name, shHero)) : '';
+  });
+  if (locData.shadow_front.length === 0) html += '<div class="empty-slot" style="width:82px;height:46px;">front</div>';
+  html += '</div>';
+
+  lane.innerHTML = html;
+}
+
+function renderWillpower(containerId, playerData) {
+  const cont = document.getElementById(containerId);
+  const current = playerData.willpower_pool;
+  const max = playerData.willpower_max;
+  let gems = '';
+  for (let i = 0; i < max; i++) {
+    gems += `<div class="wp-gem ${i < current ? 'wp-gem-filled' : 'wp-gem-empty'}"></div>`;
+  }
+  cont.innerHTML = `
+    <span class="stat-label">Willpower</span>
+    <div class="willpower-gems">${gems}</div>
+    <span class="stat-value">${current}/${max}</span>
+    <span style="margin-left:12px;" class="stat-label">Deck</span>
+    <span class="stat-value">${playerData.deck_size}</span>
+    <span style="margin-left:8px;font-size:8px;color:${playerData.leaderless ? '#ff4444' : 'transparent'};">${playerData.leaderless ? 'LEADERLESS' : ''}</span>
+  `;
+}
+
+function renderHand(containerId, labelId, playerData) {
+  const handEl = document.getElementById(containerId);
+  const labelEl = document.getElementById(labelId);
+  const faction = playerData.faction;
+  const cls = FACTION_CLASS[faction] || 'gondor';
+  const hand = playerData.hand || [];
+
+  labelEl.textContent = `${playerData.faction} Hand (${hand.length})`;
+
+  let html = '';
+  hand.forEach(c => {
+    const isEvent = c.type === 'Event';
+    const isArtifact = c.type === 'Artifact';
+    const hasStats = c.power != null;
+    html += `<div class="hand-card card-${cls}${isEvent || isArtifact ? ' hand-card-event' : ''}">
+      <div class="hand-cost">${c.cost}</div>
+      <div class="hand-type">${c.type || ''}</div>
+      ${hasStats ? `<div class="hand-stats"><span class="hand-stat-power">${c.power}</span><span class="hand-stat-health">${c.toughness}</span></div>` : ''}
+      <div class="hand-name">${c.name}</div>
+      ${c.rules ? `<div class="hand-rules">${c.rules}</div>` : ''}
+    </div>`;
+  });
+  handEl.innerHTML = html;
+}
+
+function render(state) {
+  const fp = state.fp_player;
+  const sh = state.shadow_player;
+  const board = state.board;
+  const ring = state.ring;
+
+  // Header
+  document.getElementById('turn-num').textContent = state.turn_number;
+  document.getElementById('phase-text').textContent = state.phase;
+
+  // Ring
+  const corruption = ring.corruption;
+  document.getElementById('corruption-track-inner').style.width = (corruption / 30 * 100) + '%';
+  document.getElementById('corruption-value').textContent = corruption + '/30';
+  const corruptionArea = document.getElementById('corruption-area');
+  if (corruption >= 20) corruptionArea.classList.add('corruption-high');
+  else corruptionArea.classList.remove('corruption-high');
+
+  // Heroes
+  renderHeroPanel('fp-hero-panel', fp);
+  renderHeroPanel('sh-hero-panel', sh);
+
+  // Deployment zones
+  // (Extract from board locations — deployment allies not in lane data,
+  //  we'd need the state_exporter to include them separately)
+  renderDeployZone('fp-deploy', [], fp.faction);
+  renderDeployZone('sh-deploy', [], sh.faction);
+
+  // Location lanes
+  const locs = board.locations;
+  renderLane('lane-0', locs[0], fp.faction, sh.faction, fp.hero, sh.hero);
+  renderLane('lane-1', locs[1], fp.faction, sh.faction, fp.hero, sh.hero);
+  renderLane('lane-2', locs[2], fp.faction, sh.faction, fp.hero, sh.hero);
+
+  // Resources
+  renderWillpower('fp-resources', fp);
+  renderWillpower('sh-resources', sh);
+
+  // Hands
+  renderHand('fp-hand', 'fp-hand-label', fp);
+  renderHand('sh-hand', 'sh-hand-label', sh);
+}
+
+// __GAME_STATE_PLACEHOLDER__
+</script>
+</body>
+</html>
