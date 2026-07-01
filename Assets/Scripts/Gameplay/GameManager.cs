@@ -50,19 +50,35 @@ namespace LOTRCardGame.Gameplay
 
         /// <summary>
         /// Initialize the game with chosen factions.
-        /// TODO: Implement card loading (deck creation, hero placement, opening draw).
+        /// TODO: Card library loading (deck creation, hero placement, opening draw).
         /// </summary>
         public void Setup(Faction fpFaction = Faction.Gondor, Faction shadowFaction = Faction.Mordor)
         {
-            // TODO: Create players, load hero cards, create decks, draw opening hands
-            messages.Add("GameManager.Setup() — scaffolding only. Game loop TBD.");
+            string fpName = $"Free Peoples ({fpFaction})";
+            string shadowName = $"Shadow ({shadowFaction})";
+
+            fpPlayer.playerName = fpName;
+            fpPlayer.faction = fpFaction;
+            fpPlayer.isFreePeoples = true;
+
+            shadowPlayer.playerName = shadowName;
+            shadowPlayer.faction = shadowFaction;
+            shadowPlayer.isFreePeoples = false;
+
+            board.Initialize();
+
+            // TODO: Load hero cards from ScriptableObjects, create deck, draw opening hands
+            // TODO: Deploy heroes to board, set initial willpower
+
+            messages.Clear();
+            messages.Add("Game setup complete!");
+            messages.Add($"{fpName} vs {shadowName}");
         }
 
         // --- Turn Flow ---
 
         /// <summary>
         /// Execute the Start Phase: cleanup, untap, willpower, draw, ring start-of-turn.
-        /// TODO: Full implementation in game loop phase.
         /// </summary>
         public void StartTurn()
         {
@@ -72,21 +88,68 @@ namespace LOTRCardGame.Gameplay
 
             phaseMessages.Clear();
             phaseMessages.Add($"--- {active.playerName}'s Turn {active.turnNumber} ---");
+            phaseMessages.Add($"Phase: {GamePhase.Start}");
 
-            // TODO: Remove dead allies
-            // TODO: Untap all allies + hero
-            // TODO: Willpower step
-            // TODO: Draw step
-            // TODO: Ring start-of-turn
-            // TODO: Corruption check
-            // TODO: Progress to Main Phase
+            // Remove dead allies from all locations and deployment zones
+            CleanupDeadAllies();
 
+            // Untap all allies at locations
+            int untapped = 0;
+            foreach (var loc in board.locations)
+            {
+                foreach (var ally in loc.GetAllies(activePlayer))
+                {
+                    ally.Untap();
+                    untapped++;
+                }
+            }
+
+            // Untap allies in deployment zone
+            List<BoardAlly> deployZone = activePlayer == "fp"
+                ? board.fpDeployment : board.shadowDeployment;
+            foreach (var ally in deployZone)
+            {
+                ally.Untap();
+                untapped++;
+            }
+
+            // Untap hero
+            if (active.hero != null && active.hero.IsAlive)
+            {
+                active.hero.Untap();
+                active.hero.hasUsedAbilityThisTurn = false;
+            }
+
+            phaseMessages.Add($"Untapped {untapped} allies + Hero.");
+
+            // Willpower step
+            if (active.turnNumber == 1)
+                active.willpowerMax = 1; // Both players start with 1 WP on turn 1
+            else if (active.willpowerMax < 10)
+                active.willpowerMax++;
+
+            active.willpowerPool = active.EffectiveWillpowerMax;
+            phaseMessages.Add(
+                $"Willpower: {active.willpowerPool}/{active.EffectiveWillpowerMax}");
+
+            // Draw step — active player draws 1 card
+            CardData drawn = active.DrawCard();
+            if (drawn != null)
+                phaseMessages.Add($"Drew {drawn.DisplayName}.");
+
+            // Ring start-of-turn
+            ring.StartTurn();
+
+            // Corruption check
+            phaseMessages.Add($"Ring: {ring.GetCorruptionStatus()}");
+
+            // Progress to Main Phase
             currentPhase = GamePhase.Main;
+            phaseMessages.Add($"Phase: {GamePhase.Main}");
         }
 
         /// <summary>
         /// Execute the End Phase: ring end-of-turn, clear temp effects, check game over.
-        /// TODO: Full implementation in game loop phase.
         /// </summary>
         public void EndTurn()
         {
@@ -94,56 +157,269 @@ namespace LOTRCardGame.Gameplay
             PlayerManager active = GetActivePlayer();
 
             phaseMessages.Clear();
-            phaseMessages.Add($"--- End Phase for {active.playerName} ---");
+            phaseMessages.Add($"--- {GamePhase.End} for {active.playerName} ---");
 
-            // TODO: Ring end-of-turn
-            // TODO: Clear temp bonuses from all allies (including heroes)
-            // TODO: Switch active player
-            // TODO: Check game over conditions
+            // Ring end-of-turn
+            ring.EndTurn(activePlayer);
 
+            // Clear temporary effects from all allies at locations
+            foreach (var loc in board.locations)
+            {
+                foreach (string pid in new[] { "fp", "shadow" })
+                {
+                    foreach (var ally in loc.GetAllies(pid))
+                        ally.ClearTempBonuses();
+                }
+            }
+
+            // Clear temp from deployment zones
+            foreach (var ally in board.fpDeployment)
+                ally.ClearTempBonuses();
+            foreach (var ally in board.shadowDeployment)
+                ally.ClearTempBonuses();
+
+            // Clear hero temp bonuses
+            if (fpPlayer.hero != null)
+                fpPlayer.hero.ClearTempBonuses();
+            if (shadowPlayer.hero != null)
+                shadowPlayer.hero.ClearTempBonuses();
+
+            phaseMessages.Add("Temporary effects expire.");
+
+            // Switch active player
             activePlayer = activePlayer == "fp" ? "shadow" : "fp";
             turnNumber++;
 
+            // Check game over conditions
+            CheckGameOver();
+
             if (!gameOver)
-                phaseMessages.Add($"Turn passes to {(activePlayer == "fp" ? "Free Peoples" : "Shadow")}.");
+            {
+                phaseMessages.Add(
+                    $"Turn passes to {(activePlayer == "fp" ? "Free Peoples" : "Shadow")}.");
+            }
         }
 
         // --- Game Over ---
 
         /// <summary>
-        /// Check all loss conditions: influence at 0, corruption at 30.
-        /// Returns winner string or null.
-        /// TODO: Full implementation in game loop phase.
+        /// Check all loss conditions: influence at 0, corruption at 30, fatigue.
         /// </summary>
-        public string CheckGameOver()
+        public void CheckGameOver()
         {
-            // TODO: Influence check
-            // TODO: Corruption check
-            // TODO: Fatigue double-check
-            return null;
+            // Influence check
+            if (fpPlayer.IsDefeated())
+            {
+                gameOver = true;
+                winner = "shadow";
+                lossReason = "Free Peoples' Influence reduced to 0!";
+                currentPhase = GamePhase.GameOver;
+                phaseMessages.Add($"GAME OVER: {lossReason}");
+                return;
+            }
+
+            if (shadowPlayer.IsDefeated())
+            {
+                gameOver = true;
+                winner = "fp";
+                lossReason = "Shadow's Influence reduced to 0!";
+                currentPhase = GamePhase.GameOver;
+                phaseMessages.Add($"GAME OVER: {lossReason}");
+                return;
+            }
+
+            // Corruption check
+            string corruptionLoser = ring.CheckCorruptionLoss();
+            if (corruptionLoser != null)
+            {
+                gameOver = true;
+                winner = corruptionLoser == "fp" ? "shadow" : "fp";
+                lossReason = $"Corruption reached 30! " +
+                    $"{(corruptionLoser == "fp" ? "Free Peoples" : "Shadow")} loses!";
+                currentPhase = GamePhase.GameOver;
+                phaseMessages.Add($"GAME OVER: {lossReason}");
+                return;
+            }
+
+            // Fatigue double-check (deck exhaustion can reduce influence below zero)
+            if (fpPlayer.influence <= 0)
+            {
+                gameOver = true;
+                winner = "shadow";
+                lossReason = "Free Peoples' Influence reduced to 0 (fatigue)!";
+                currentPhase = GamePhase.GameOver;
+                return;
+            }
+
+            if (shadowPlayer.influence <= 0)
+            {
+                gameOver = true;
+                winner = "fp";
+                lossReason = "Shadow's Influence reduced to 0 (fatigue)!";
+                currentPhase = GamePhase.GameOver;
+                return;
+            }
         }
 
         // --- Card Play ---
 
         /// <summary>
         /// Play a card from hand. Returns list of result messages.
-        /// TODO: Full implementation in game loop phase.
+        /// Dispatches by card type: Ally, Event, Artifact, Location.
         /// </summary>
         public List<string> PlayCard(CardData card, string player)
         {
             var msgs = new List<string>();
-            msgs.Add("GameManager.PlayCard() — scaffolding only. Game loop TBD.");
+            PlayerManager playerState = GetPlayerState(player);
+
+            // Check willpower
+            if (!playerState.SpendWillpower(card.cost))
+            {
+                msgs.Add($"Not enough Willpower! Need {card.cost}, " +
+                    $"have {playerState.willpowerPool}.");
+                return msgs;
+            }
+
+            // Remove from hand
+            if (!playerState.PlayCard(card))
+            {
+                msgs.Add("Card not in hand!");
+                // Refund willpower
+                playerState.AddWillpower(card.cost);
+                return msgs;
+            }
+
+            msgs.Add($"Played {card.DisplayName} for {card.cost} WP.");
+
+            switch (card.cardType)
+            {
+                case CardType.Ally:
+                    var ally = new BoardAlly
+                    {
+                        card = card,
+                        currentToughness = card.toughness,
+                        turnEntered = playerState.turnNumber,
+                        tapped = true // Summoning sickness
+                    };
+
+                    if (ally.HasCharge)
+                        ally.tapped = false;
+
+                    board.DeployAlly(ally, player);
+                    msgs.Add($"{card.cardName} enters deployment zone.");
+
+                    if (ally.HasAmbush)
+                        msgs.Add("Ambush: can deploy directly to contested location (auto for AI).");
+
+                    // TODO: Resolve on-enter effects via EffectResolver (step 4)
+                    break;
+
+                case CardType.Event:
+                    // TODO: Resolve event via EventResolver (step 4)
+                    // For now: events go directly to discard
+                    playerState.discard.Add(card);
+                    msgs.Add($"{card.cardName} resolves and goes to discard.");
+                    break;
+
+                case CardType.Artifact:
+                    if (playerState.hero != null && playerState.hero.IsAlive)
+                    {
+                        playerState.hero.artifacts.Add(card);
+                        msgs.Add($"{card.cardName} attached to {playerState.hero.card.cardName}.");
+                    }
+                    else
+                    {
+                        msgs.Add("No hero to attach artifact to!");
+                        playerState.discard.Add(card);
+                    }
+                    break;
+
+                case CardType.Location:
+                    bool placed = false;
+                    for (int i = 0; i < board.locations.Count; i++)
+                    {
+                        if (board.locations[i].IsEmpty)
+                        {
+                            board.PlayLocation(card, player, i);
+                            msgs.Add($"{card.cardName} placed at Location Slot {i + 1} " +
+                                $"(Def {card.defense}).");
+                            placed = true;
+                            break;
+                        }
+                    }
+                    if (!placed)
+                    {
+                        msgs.Add("No empty location slots available!");
+                        playerState.discard.Add(card);
+                    }
+                    break;
+            }
+
             return msgs;
         }
 
+        // --- Ally Movement ---
+
         /// <summary>
         /// Move an ally on the board. Returns list of result messages.
-        /// TODO: Full implementation in game loop phase.
         /// </summary>
-        public List<string> MoveAlly(BoardAlly ally, string player, int targetLocation, string targetRow = "front")
+        public List<string> MoveAlly(BoardAlly ally, string player,
+            int targetLocation, string targetRow = "front")
         {
             var msgs = new List<string>();
-            msgs.Add("GameManager.MoveAlly() — scaffolding only. Game loop TBD.");
+            int? currentLocIndex = board.FindAllyLocation(ally, player);
+
+            if (currentLocIndex == null)
+            {
+                msgs.Add("Ally not found on board!");
+                return msgs;
+            }
+
+            int current = currentLocIndex.Value;
+
+            // Can the ally move?
+            if (!ally.CanMove() && current != -1)
+            {
+                msgs.Add($"{ally.card.cardName} cannot move (tapped or already acted)!");
+                return msgs;
+            }
+
+            bool success = false;
+
+            if (current == -1)
+            {
+                // From deployment to location
+                success = board.MoveAllyToLocation(ally, player, targetLocation, targetRow);
+                if (success)
+                    msgs.Add($"{ally.card.cardName} moves to Location {targetLocation + 1} ({targetRow}).");
+            }
+            else if (current == targetLocation)
+            {
+                // Row swap at same location
+                success = board.MoveAllyBetweenRows(ally, player, targetLocation, targetRow);
+                if (success)
+                    msgs.Add($"{ally.card.cardName} moves to {targetRow} line at Location {targetLocation + 1}.");
+                else
+                    msgs.Add("Already in that row or move failed.");
+            }
+            else
+            {
+                // Between locations
+                success = board.MoveAllyBetweenLocations(ally, player, current, targetLocation, targetRow);
+                if (success)
+                    msgs.Add($"{ally.card.cardName} moves from Location {current + 1} to {targetLocation + 1}.");
+            }
+
+            if (!success && current != -1)
+            {
+                msgs.Add("Move failed — row may be full or not adjacent.");
+                return msgs;
+            }
+
+            // Movement costs the ally's action
+            ally.tapped = true;
+            ally.hasMovedThisTurn = true;
+
             return msgs;
         }
 
@@ -152,6 +428,11 @@ namespace LOTRCardGame.Gameplay
         public PlayerManager GetActivePlayer()
         {
             return activePlayer == "fp" ? fpPlayer : shadowPlayer;
+        }
+
+        public PlayerManager GetPlayerState(string player)
+        {
+            return player == "fp" ? fpPlayer : shadowPlayer;
         }
 
         public PlayerManager GetEnemyPlayer(string player)
@@ -171,6 +452,23 @@ namespace LOTRCardGame.Gameplay
         public bool IsFreePeoplesFaction(Faction faction)
         {
             return !IsShadowFaction(faction);
+        }
+
+        // --- Internal ---
+
+        /// <summary>
+        /// Remove dead allies from all locations and deployment zones for both players.
+        /// Moves their cards to the owning player's discard pile.
+        /// </summary>
+        private void CleanupDeadAllies()
+        {
+            var fpDead = board.RemoveDeadAllies("fp");
+            foreach (var dead in fpDead)
+                fpPlayer.discard.Add(dead.card);
+
+            var shadowDead = board.RemoveDeadAllies("shadow");
+            foreach (var dead in shadowDead)
+                shadowPlayer.discard.Add(dead.card);
         }
     }
 
