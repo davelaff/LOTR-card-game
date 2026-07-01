@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ac69477f7c75ea46a4ded2a52c4e446, type: 3}
+  m_Name: Glorfindel,_Lord_of_the_Golden_Flower
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.Data.CardData
+  cardName: Glorfindel, Lord of the Golden Flower
+  faction: 2
+  cardType: 1
+  rarity: 0
+  cost: 6
+  power: 5
+  toughness: 3
+  defense: 0
+  rulesText: '+2 Power vs Nazgul at contested location. Grace: prevent all first
+    damage.'
+  flavorText: 
+  creatureTypes:
+  - Elf
+  - Champion
+  keywords:
+  - Grace
+  cardArt: {fileID: 0}

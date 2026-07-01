@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ac69477f7c75ea46a4ded2a52c4e446, type: 3}
+  m_Name: Imrahil,_Prince_of_Dol_Amroth
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.Data.CardData
+  cardName: Imrahil, Prince of Dol Amroth
+  faction: 0
+  cardType: 1
+  rarity: 2
+  cost: 6
+  power: 4
+  toughness: 6
+  defense: 0
+  rulesText: 'Rally the Swan-knights: On enter, heal 1 from each other Gondor ally.
+
+    Valour:
+    +1 Power while at contested location.'
+  flavorText: 
+  creatureTypes:
+  - Man
+  - Knight
+  - Noble
+  keywords:
+  - Valour
+  cardArt: {fileID: 0}

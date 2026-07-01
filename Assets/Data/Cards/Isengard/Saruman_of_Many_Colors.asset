@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ac69477f7c75ea46a4ded2a52c4e446, type: 3}
+  m_Name: Saruman_of_Many_Colors
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.Data.CardData
+  cardName: Saruman of Many Colors
+  faction: 6
+  cardType: 0
+  rarity: 4
+  cost: 0
+  power: 3
+  toughness: 5
+  defense: 0
+  rulesText: 'The Voice of Saruman: Exhaust, target enemy at contested location gets
+    -2 Power.
+
+    Industrial Might: Sacrifice Uruk-hai to gain 3 WP (Isengard cards
+    only).'
+  flavorText: '"For I am Saruman the Wise, Saruman Ring-maker, Saruman of Many Colors!"'
+  creatureTypes:
+  - Wizard
+  keywords:
+  - Industry
+  cardArt: {fileID: 0}

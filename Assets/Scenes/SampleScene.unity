@@ -38,12 +38,12 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -119,6 +119,208 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &224593770
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 224593772}
+  - component: {fileID: 224593771}
+  m_Layer: 0
+  m_Name: Hero_Aragorn, Heir of Isildur
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &224593771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 224593770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84fdc0652d022d548a61cb0d4103dc65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.BoardCreature
+  cardData: {fileID: 11400000, guid: 34d1209e8ef478442bf85eaa6fbd57a0, type: 2}
+  currentToughness: 5
+  damage: 0
+  tapped: 0
+  hasAttackedThisTurn: 0
+  hasMovedThisTurn: 0
+  hasUsedAbilityThisTurn: 0
+  turnEntered: 1
+  powerBonus: 0
+  toughnessBonus: 0
+  temporaryKeywords: 
+--- !u!4 &224593772
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 224593770}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &249862903
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 249862905}
+  - component: {fileID: 249862904}
+  m_Layer: 0
+  m_Name: Test
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &249862904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 249862903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e679871395135b4eae87a04d202db42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.GameManager
+  fpPlayer:
+    playerName: Free Peoples
+    faction: 0
+    side: 0
+    influence: 30
+    willpowerMax: 1
+    willpowerPool: 0
+    deck:
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: 39187dfdcf525c6479a619c29b2db28e, type: 2}
+    - {fileID: 11400000, guid: ede1d0b2be6e88b44b5cd6a05c776c63, type: 2}
+    - {fileID: 11400000, guid: 70c58258816bd834dbc6092254db5793, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: f3d690d85d9ac464c89b26d510a5d5b9, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: 392e21ff1b062084eb50bf5e513ea032, type: 2}
+    - {fileID: 11400000, guid: 70c58258816bd834dbc6092254db5793, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    - {fileID: 11400000, guid: 417d0e900186fbe4b8ab38b0761a01b4, type: 2}
+    - {fileID: 11400000, guid: 6c3fb02fb09783a43b8c667f97bfb487, type: 2}
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    - {fileID: 11400000, guid: d720f4071bc34c6438f5f8d20f84f2e9, type: 2}
+    - {fileID: 11400000, guid: ede1d0b2be6e88b44b5cd6a05c776c63, type: 2}
+    - {fileID: 11400000, guid: b7ff5093dedf77a48b6a0f832a16a27a, type: 2}
+    - {fileID: 11400000, guid: 5c837cb71f2f8964e8b3ff7bf43e3c43, type: 2}
+    - {fileID: 11400000, guid: 6c3fb02fb09783a43b8c667f97bfb487, type: 2}
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: b277d2471ee4ff54ebf62d584b25827b, type: 2}
+    - {fileID: 11400000, guid: 417d0e900186fbe4b8ab38b0761a01b4, type: 2}
+    - {fileID: 11400000, guid: 145406302fab5db43813f9c0d8a5c5ff, type: 2}
+    hand:
+    - {fileID: 11400000, guid: 39187dfdcf525c6479a619c29b2db28e, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: f3d690d85d9ac464c89b26d510a5d5b9, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    discard: []
+    hero: {fileID: 224593771}
+    heroInPlay: 1
+    leaderless: 0
+    fatigueCounter: 0
+    turnNumber: 0
+  shadowPlayer:
+    playerName: Shadow
+    faction: 1
+    side: 1
+    influence: 30
+    willpowerMax: 1
+    willpowerPool: 0
+    deck:
+    - {fileID: 11400000, guid: 52dbeeb7d3a5d224c9760ba992969d51, type: 2}
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: 6ea2c3619baef714ab900106da28ce4d, type: 2}
+    - {fileID: 11400000, guid: 2d85d81964ed04f4aadeb2e4068de6f2, type: 2}
+    - {fileID: 11400000, guid: c99b2b34aaa58e043b11fd77082aa281, type: 2}
+    - {fileID: 11400000, guid: 882c471ab2b781149922594fd76ca3bd, type: 2}
+    - {fileID: 11400000, guid: 51c41d3afda2e6d4ead592c1aba96b8d, type: 2}
+    - {fileID: 11400000, guid: 238a823e5ac68d84893576f190dc90d1, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    - {fileID: 11400000, guid: 080d8b986d385474d948f38aa08b1f9a, type: 2}
+    - {fileID: 11400000, guid: 5bd7d26682396244db37e1547764d757, type: 2}
+    - {fileID: 11400000, guid: f0a11bd5cafd9ad40b8789df33bf0777, type: 2}
+    - {fileID: 11400000, guid: f11c4997787f7ee4586e7d9474dc66d1, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    - {fileID: 11400000, guid: 6ea2c3619baef714ab900106da28ce4d, type: 2}
+    - {fileID: 11400000, guid: 080d8b986d385474d948f38aa08b1f9a, type: 2}
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: f0a11bd5cafd9ad40b8789df33bf0777, type: 2}
+    - {fileID: 11400000, guid: 182edbc1744c6ac46abb2c88b76dca6a, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: 5bd7d26682396244db37e1547764d757, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    - {fileID: 11400000, guid: bee7b770cbb3e644e94158c1a12ca61f, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    hand:
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    - {fileID: 11400000, guid: 51c41d3afda2e6d4ead592c1aba96b8d, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    - {fileID: 11400000, guid: 882c471ab2b781149922594fd76ca3bd, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    discard: []
+    hero: {fileID: 0}
+    heroInPlay: 1
+    leaderless: 0
+    fatigueCounter: 0
+    turnNumber: 0
+  board: {fileID: 0}
+  ring:
+    corruption: 0
+    bearer: 0
+    fpActivatedThisTurn: 0
+    shadowActivatedThisTurn: 0
+    shadowBearerTurns: 0
+  currentTurnNumber: 1
+  activePlayer: 0
+  currentPhase: 0
+  fpFactionData: {fileID: 11400000, guid: 9d4b4e71bcecac14bbe82e204609d19d, type: 2}
+  shadowFactionData: {fileID: 11400000, guid: 51fc6526d52e16f409e9953de2217d45, type: 2}
+--- !u!4 &249862905
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 249862903}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -248,14 +450,14 @@ MonoBehaviour:
   m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
-  m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -282,14 +484,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 13
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 2
     m_Resolution: -1
@@ -334,8 +536,11 @@ Light:
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ForceVisible: 0
-  m_ShadowRadius: 0
+  m_ShapeRadius: 0
   m_ShadowAngle: 0
+  m_LightUnit: 1
+  m_LuxAtDistance: 1
+  m_EnableSpotReflector: 1
 --- !u!4 &410087041
 Transform:
   m_ObjectHideFlags: 0
@@ -363,17 +568,225 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Version: 3
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
-  m_LightLayerMask: 1
-  m_RenderingLayers: 1
   m_CustomShadowLayers: 0
-  m_ShadowLayerMask: 1
-  m_ShadowRenderingLayers: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
+--- !u!1 &539624690
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 539624692}
+  - component: {fileID: 539624691}
+  m_Layer: 0
+  m_Name: Test
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &539624691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 539624690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e679871395135b4eae87a04d202db42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.GameManager
+  fpPlayer:
+    playerName: Free Peoples
+    faction: 0
+    side: 0
+    influence: 30
+    willpowerMax: 1
+    willpowerPool: 0
+    deck:
+    - {fileID: 11400000, guid: 392e21ff1b062084eb50bf5e513ea032, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    - {fileID: 11400000, guid: 145406302fab5db43813f9c0d8a5c5ff, type: 2}
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: 70c58258816bd834dbc6092254db5793, type: 2}
+    - {fileID: 11400000, guid: b7ff5093dedf77a48b6a0f832a16a27a, type: 2}
+    - {fileID: 11400000, guid: d720f4071bc34c6438f5f8d20f84f2e9, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: 39187dfdcf525c6479a619c29b2db28e, type: 2}
+    - {fileID: 11400000, guid: 5c837cb71f2f8964e8b3ff7bf43e3c43, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    - {fileID: 11400000, guid: f3d690d85d9ac464c89b26d510a5d5b9, type: 2}
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    - {fileID: 11400000, guid: f3d690d85d9ac464c89b26d510a5d5b9, type: 2}
+    - {fileID: 11400000, guid: ede1d0b2be6e88b44b5cd6a05c776c63, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: 417d0e900186fbe4b8ab38b0761a01b4, type: 2}
+    - {fileID: 11400000, guid: 417d0e900186fbe4b8ab38b0761a01b4, type: 2}
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: 70c58258816bd834dbc6092254db5793, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: 6c3fb02fb09783a43b8c667f97bfb487, type: 2}
+    - {fileID: 11400000, guid: b277d2471ee4ff54ebf62d584b25827b, type: 2}
+    hand:
+    - {fileID: 11400000, guid: 39187dfdcf525c6479a619c29b2db28e, type: 2}
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    - {fileID: 11400000, guid: ede1d0b2be6e88b44b5cd6a05c776c63, type: 2}
+    - {fileID: 11400000, guid: 6c3fb02fb09783a43b8c667f97bfb487, type: 2}
+    discard: []
+    hero: {fileID: 1209259533}
+    heroInPlay: 1
+    leaderless: 0
+    fatigueCounter: 0
+    turnNumber: 0
+  shadowPlayer:
+    playerName: Shadow
+    faction: 1
+    side: 1
+    influence: 30
+    willpowerMax: 1
+    willpowerPool: 0
+    deck:
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    - {fileID: 11400000, guid: 5bd7d26682396244db37e1547764d757, type: 2}
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: 080d8b986d385474d948f38aa08b1f9a, type: 2}
+    - {fileID: 11400000, guid: 51c41d3afda2e6d4ead592c1aba96b8d, type: 2}
+    - {fileID: 11400000, guid: f0a11bd5cafd9ad40b8789df33bf0777, type: 2}
+    - {fileID: 11400000, guid: 080d8b986d385474d948f38aa08b1f9a, type: 2}
+    - {fileID: 11400000, guid: 882c471ab2b781149922594fd76ca3bd, type: 2}
+    - {fileID: 11400000, guid: f11c4997787f7ee4586e7d9474dc66d1, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    - {fileID: 11400000, guid: 2d85d81964ed04f4aadeb2e4068de6f2, type: 2}
+    - {fileID: 11400000, guid: 182edbc1744c6ac46abb2c88b76dca6a, type: 2}
+    - {fileID: 11400000, guid: 882c471ab2b781149922594fd76ca3bd, type: 2}
+    - {fileID: 11400000, guid: c99b2b34aaa58e043b11fd77082aa281, type: 2}
+    - {fileID: 11400000, guid: 6ea2c3619baef714ab900106da28ce4d, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: 52dbeeb7d3a5d224c9760ba992969d51, type: 2}
+    - {fileID: 11400000, guid: bee7b770cbb3e644e94158c1a12ca61f, type: 2}
+    - {fileID: 11400000, guid: 238a823e5ac68d84893576f190dc90d1, type: 2}
+    hand:
+    - {fileID: 11400000, guid: 5bd7d26682396244db37e1547764d757, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    - {fileID: 11400000, guid: 6ea2c3619baef714ab900106da28ce4d, type: 2}
+    - {fileID: 11400000, guid: 51c41d3afda2e6d4ead592c1aba96b8d, type: 2}
+    - {fileID: 11400000, guid: f0a11bd5cafd9ad40b8789df33bf0777, type: 2}
+    discard: []
+    hero: {fileID: 0}
+    heroInPlay: 1
+    leaderless: 0
+    fatigueCounter: 0
+    turnNumber: 0
+  board: {fileID: 0}
+  ring:
+    corruption: 0
+    bearer: 0
+    fpActivatedThisTurn: 0
+    shadowActivatedThisTurn: 0
+    shadowBearerTurns: 0
+  currentTurnNumber: 1
+  activePlayer: 0
+  currentPhase: 0
+  fpFactionData: {fileID: 11400000, guid: 9d4b4e71bcecac14bbe82e204609d19d, type: 2}
+  shadowFactionData: {fileID: 11400000, guid: 51fc6526d52e16f409e9953de2217d45, type: 2}
+--- !u!4 &539624692
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 539624690}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &653771344
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 653771346}
+  - component: {fileID: 653771345}
+  m_Layer: 0
+  m_Name: Hero_Aragorn, Heir of Isildur
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &653771345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 653771344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84fdc0652d022d548a61cb0d4103dc65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.BoardCreature
+  cardData: {fileID: 11400000, guid: 34d1209e8ef478442bf85eaa6fbd57a0, type: 2}
+  currentToughness: 5
+  damage: 0
+  tapped: 0
+  hasAttackedThisTurn: 0
+  hasMovedThisTurn: 0
+  hasUsedAbilityThisTurn: 0
+  turnEntered: 1
+  powerBonus: 0
+  toughnessBonus: 0
+  temporaryKeywords: 
+--- !u!4 &653771346
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 653771344}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -423,6 +836,1176 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &944299424
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 944299426}
+  - component: {fileID: 944299425}
+  - component: {fileID: 944299427}
+  m_Layer: 0
+  m_Name: Game Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &944299425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 944299424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e679871395135b4eae87a04d202db42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.GameManager
+  fpPlayer:
+    playerName: 
+    faction: 0
+    side: 0
+    influence: 30
+    willpowerMax: 1
+    willpowerPool: 0
+    deck:
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    - {fileID: 11400000, guid: 70c58258816bd834dbc6092254db5793, type: 2}
+    - {fileID: 11400000, guid: 6c3fb02fb09783a43b8c667f97bfb487, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: 417d0e900186fbe4b8ab38b0761a01b4, type: 2}
+    - {fileID: 11400000, guid: 39187dfdcf525c6479a619c29b2db28e, type: 2}
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    - {fileID: 11400000, guid: 6c3fb02fb09783a43b8c667f97bfb487, type: 2}
+    - {fileID: 11400000, guid: d720f4071bc34c6438f5f8d20f84f2e9, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    - {fileID: 11400000, guid: b277d2471ee4ff54ebf62d584b25827b, type: 2}
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    - {fileID: 11400000, guid: b7ff5093dedf77a48b6a0f832a16a27a, type: 2}
+    - {fileID: 11400000, guid: 145406302fab5db43813f9c0d8a5c5ff, type: 2}
+    - {fileID: 11400000, guid: f3d690d85d9ac464c89b26d510a5d5b9, type: 2}
+    - {fileID: 11400000, guid: 39187dfdcf525c6479a619c29b2db28e, type: 2}
+    - {fileID: 11400000, guid: ede1d0b2be6e88b44b5cd6a05c776c63, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    - {fileID: 11400000, guid: 392e21ff1b062084eb50bf5e513ea032, type: 2}
+    - {fileID: 11400000, guid: 5c837cb71f2f8964e8b3ff7bf43e3c43, type: 2}
+    - {fileID: 11400000, guid: f3d690d85d9ac464c89b26d510a5d5b9, type: 2}
+    - {fileID: 11400000, guid: 70c58258816bd834dbc6092254db5793, type: 2}
+    hand:
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: 417d0e900186fbe4b8ab38b0761a01b4, type: 2}
+    - {fileID: 11400000, guid: ede1d0b2be6e88b44b5cd6a05c776c63, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    discard: []
+    hero: {fileID: 653771345}
+    heroInPlay: 1
+    leaderless: 0
+    fatigueCounter: 0
+    turnNumber: 0
+  shadowPlayer:
+    playerName: 
+    faction: 1
+    side: 0
+    influence: 30
+    willpowerMax: 1
+    willpowerPool: 0
+    deck:
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: 5bd7d26682396244db37e1547764d757, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: f0a11bd5cafd9ad40b8789df33bf0777, type: 2}
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: 5bd7d26682396244db37e1547764d757, type: 2}
+    - {fileID: 11400000, guid: f11c4997787f7ee4586e7d9474dc66d1, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    - {fileID: 11400000, guid: f0a11bd5cafd9ad40b8789df33bf0777, type: 2}
+    - {fileID: 11400000, guid: 882c471ab2b781149922594fd76ca3bd, type: 2}
+    - {fileID: 11400000, guid: 2d85d81964ed04f4aadeb2e4068de6f2, type: 2}
+    - {fileID: 11400000, guid: 6ea2c3619baef714ab900106da28ce4d, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    - {fileID: 11400000, guid: 51c41d3afda2e6d4ead592c1aba96b8d, type: 2}
+    - {fileID: 11400000, guid: c99b2b34aaa58e043b11fd77082aa281, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    - {fileID: 11400000, guid: 882c471ab2b781149922594fd76ca3bd, type: 2}
+    - {fileID: 11400000, guid: 182edbc1744c6ac46abb2c88b76dca6a, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    - {fileID: 11400000, guid: bee7b770cbb3e644e94158c1a12ca61f, type: 2}
+    - {fileID: 11400000, guid: 6ea2c3619baef714ab900106da28ce4d, type: 2}
+    - {fileID: 11400000, guid: 238a823e5ac68d84893576f190dc90d1, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    - {fileID: 11400000, guid: 080d8b986d385474d948f38aa08b1f9a, type: 2}
+    hand:
+    - {fileID: 11400000, guid: 51c41d3afda2e6d4ead592c1aba96b8d, type: 2}
+    - {fileID: 11400000, guid: 52dbeeb7d3a5d224c9760ba992969d51, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: 080d8b986d385474d948f38aa08b1f9a, type: 2}
+    discard: []
+    hero: {fileID: 2037975903}
+    heroInPlay: 1
+    leaderless: 0
+    fatigueCounter: 0
+    turnNumber: 0
+  board: {fileID: 944299427}
+  ring:
+    corruption: 0
+    bearer: 0
+    fpActivatedThisTurn: 0
+    shadowActivatedThisTurn: 0
+    shadowBearerTurns: 0
+  currentTurnNumber: 1
+  activePlayer: 0
+  currentPhase: 0
+  fpFactionData: {fileID: 11400000, guid: 9d4b4e71bcecac14bbe82e204609d19d, type: 2}
+  shadowFactionData: {fileID: 11400000, guid: 51fc6526d52e16f409e9953de2217d45, type: 2}
+--- !u!4 &944299426
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 944299424}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &944299427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 944299424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 233f2ed6273e98847b4df264b3f00d15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.BoardController
+  locations: []
+  fpDeployment:
+  - {fileID: 653771345}
+  shadowDeployment:
+  - {fileID: 2037975903}
+  openFieldCard: {fileID: 11400000, guid: e7d19afb3efecab428f6cd850e72a419, type: 2}
+--- !u!1 &1001621421
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1001621423}
+  - component: {fileID: 1001621422}
+  m_Layer: 0
+  m_Name: Test
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1001621422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1001621421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e679871395135b4eae87a04d202db42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.GameManager
+  fpPlayer:
+    playerName: Free Peoples
+    faction: 0
+    side: 0
+    influence: 30
+    willpowerMax: 1
+    willpowerPool: 0
+    deck:
+    - {fileID: 11400000, guid: 392e21ff1b062084eb50bf5e513ea032, type: 2}
+    - {fileID: 11400000, guid: 70c58258816bd834dbc6092254db5793, type: 2}
+    - {fileID: 11400000, guid: b7ff5093dedf77a48b6a0f832a16a27a, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    - {fileID: 11400000, guid: 417d0e900186fbe4b8ab38b0761a01b4, type: 2}
+    - {fileID: 11400000, guid: 39187dfdcf525c6479a619c29b2db28e, type: 2}
+    - {fileID: 11400000, guid: f3d690d85d9ac464c89b26d510a5d5b9, type: 2}
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: ede1d0b2be6e88b44b5cd6a05c776c63, type: 2}
+    - {fileID: 11400000, guid: 6c3fb02fb09783a43b8c667f97bfb487, type: 2}
+    - {fileID: 11400000, guid: d720f4071bc34c6438f5f8d20f84f2e9, type: 2}
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: f3d690d85d9ac464c89b26d510a5d5b9, type: 2}
+    - {fileID: 11400000, guid: 6c3fb02fb09783a43b8c667f97bfb487, type: 2}
+    - {fileID: 11400000, guid: 145406302fab5db43813f9c0d8a5c5ff, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    - {fileID: 11400000, guid: b277d2471ee4ff54ebf62d584b25827b, type: 2}
+    - {fileID: 11400000, guid: ede1d0b2be6e88b44b5cd6a05c776c63, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: 5c837cb71f2f8964e8b3ff7bf43e3c43, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    hand:
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    - {fileID: 11400000, guid: 70c58258816bd834dbc6092254db5793, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    - {fileID: 11400000, guid: 39187dfdcf525c6479a619c29b2db28e, type: 2}
+    - {fileID: 11400000, guid: 417d0e900186fbe4b8ab38b0761a01b4, type: 2}
+    discard: []
+    hero: {fileID: 1113949552}
+    heroInPlay: 1
+    leaderless: 0
+    fatigueCounter: 0
+    turnNumber: 0
+  shadowPlayer:
+    playerName: Shadow
+    faction: 1
+    side: 1
+    influence: 30
+    willpowerMax: 1
+    willpowerPool: 0
+    deck:
+    - {fileID: 11400000, guid: 5bd7d26682396244db37e1547764d757, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    - {fileID: 11400000, guid: bee7b770cbb3e644e94158c1a12ca61f, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    - {fileID: 11400000, guid: 238a823e5ac68d84893576f190dc90d1, type: 2}
+    - {fileID: 11400000, guid: 080d8b986d385474d948f38aa08b1f9a, type: 2}
+    - {fileID: 11400000, guid: 51c41d3afda2e6d4ead592c1aba96b8d, type: 2}
+    - {fileID: 11400000, guid: c99b2b34aaa58e043b11fd77082aa281, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: 52dbeeb7d3a5d224c9760ba992969d51, type: 2}
+    - {fileID: 11400000, guid: f0a11bd5cafd9ad40b8789df33bf0777, type: 2}
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    - {fileID: 11400000, guid: 080d8b986d385474d948f38aa08b1f9a, type: 2}
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: 882c471ab2b781149922594fd76ca3bd, type: 2}
+    - {fileID: 11400000, guid: 2d85d81964ed04f4aadeb2e4068de6f2, type: 2}
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: 182edbc1744c6ac46abb2c88b76dca6a, type: 2}
+    - {fileID: 11400000, guid: 882c471ab2b781149922594fd76ca3bd, type: 2}
+    - {fileID: 11400000, guid: f11c4997787f7ee4586e7d9474dc66d1, type: 2}
+    - {fileID: 11400000, guid: f0a11bd5cafd9ad40b8789df33bf0777, type: 2}
+    - {fileID: 11400000, guid: 6ea2c3619baef714ab900106da28ce4d, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    hand:
+    - {fileID: 11400000, guid: 51c41d3afda2e6d4ead592c1aba96b8d, type: 2}
+    - {fileID: 11400000, guid: 5bd7d26682396244db37e1547764d757, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: 6ea2c3619baef714ab900106da28ce4d, type: 2}
+    discard: []
+    hero: {fileID: 0}
+    heroInPlay: 1
+    leaderless: 0
+    fatigueCounter: 0
+    turnNumber: 0
+  board: {fileID: 0}
+  ring:
+    corruption: 0
+    bearer: 0
+    fpActivatedThisTurn: 0
+    shadowActivatedThisTurn: 0
+    shadowBearerTurns: 0
+  currentTurnNumber: 1
+  activePlayer: 0
+  currentPhase: 0
+  fpFactionData: {fileID: 11400000, guid: 9d4b4e71bcecac14bbe82e204609d19d, type: 2}
+  shadowFactionData: {fileID: 11400000, guid: 51fc6526d52e16f409e9953de2217d45, type: 2}
+--- !u!4 &1001621423
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1001621421}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1079731317
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1079731319}
+  - component: {fileID: 1079731318}
+  m_Layer: 0
+  m_Name: Hero_Aragorn, Heir of Isildur
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1079731318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1079731317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84fdc0652d022d548a61cb0d4103dc65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.BoardCreature
+  cardData: {fileID: 11400000, guid: 34d1209e8ef478442bf85eaa6fbd57a0, type: 2}
+  currentToughness: 5
+  damage: 0
+  tapped: 0
+  hasAttackedThisTurn: 0
+  hasMovedThisTurn: 0
+  hasUsedAbilityThisTurn: 0
+  turnEntered: 1
+  powerBonus: 0
+  toughnessBonus: 0
+  temporaryKeywords: 
+--- !u!4 &1079731319
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1079731317}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1113949551
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1113949553}
+  - component: {fileID: 1113949552}
+  m_Layer: 0
+  m_Name: Hero_Aragorn, Heir of Isildur
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1113949552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1113949551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84fdc0652d022d548a61cb0d4103dc65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.BoardCreature
+  cardData: {fileID: 11400000, guid: 34d1209e8ef478442bf85eaa6fbd57a0, type: 2}
+  currentToughness: 5
+  damage: 0
+  tapped: 0
+  hasAttackedThisTurn: 0
+  hasMovedThisTurn: 0
+  hasUsedAbilityThisTurn: 0
+  turnEntered: 1
+  powerBonus: 0
+  toughnessBonus: 0
+  temporaryKeywords: 
+--- !u!4 &1113949553
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1113949551}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1209259532
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1209259534}
+  - component: {fileID: 1209259533}
+  m_Layer: 0
+  m_Name: Hero_Aragorn, Heir of Isildur
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1209259533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1209259532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84fdc0652d022d548a61cb0d4103dc65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.BoardCreature
+  cardData: {fileID: 11400000, guid: 34d1209e8ef478442bf85eaa6fbd57a0, type: 2}
+  currentToughness: 5
+  damage: 0
+  tapped: 0
+  hasAttackedThisTurn: 0
+  hasMovedThisTurn: 0
+  hasUsedAbilityThisTurn: 0
+  turnEntered: 1
+  powerBonus: 0
+  toughnessBonus: 0
+  temporaryKeywords: 
+--- !u!4 &1209259534
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1209259532}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1256553203
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1256553205}
+  - component: {fileID: 1256553204}
+  m_Layer: 0
+  m_Name: Hero_Aragorn, Heir of Isildur
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1256553204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1256553203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84fdc0652d022d548a61cb0d4103dc65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.BoardCreature
+  cardData: {fileID: 11400000, guid: 34d1209e8ef478442bf85eaa6fbd57a0, type: 2}
+  currentToughness: 5
+  damage: 0
+  tapped: 0
+  hasAttackedThisTurn: 0
+  hasMovedThisTurn: 0
+  hasUsedAbilityThisTurn: 0
+  turnEntered: 1
+  powerBonus: 0
+  toughnessBonus: 0
+  temporaryKeywords: 
+--- !u!4 &1256553205
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1256553203}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1435922938
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1435922940}
+  - component: {fileID: 1435922939}
+  m_Layer: 0
+  m_Name: Test
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1435922939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1435922938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e679871395135b4eae87a04d202db42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.GameManager
+  fpPlayer:
+    playerName: Free Peoples
+    faction: 0
+    side: 0
+    influence: 30
+    willpowerMax: 1
+    willpowerPool: 0
+    deck:
+    - {fileID: 11400000, guid: 39187dfdcf525c6479a619c29b2db28e, type: 2}
+    - {fileID: 11400000, guid: 417d0e900186fbe4b8ab38b0761a01b4, type: 2}
+    - {fileID: 11400000, guid: d720f4071bc34c6438f5f8d20f84f2e9, type: 2}
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    - {fileID: 11400000, guid: 39187dfdcf525c6479a619c29b2db28e, type: 2}
+    - {fileID: 11400000, guid: 417d0e900186fbe4b8ab38b0761a01b4, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    - {fileID: 11400000, guid: f3d690d85d9ac464c89b26d510a5d5b9, type: 2}
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: ede1d0b2be6e88b44b5cd6a05c776c63, type: 2}
+    - {fileID: 11400000, guid: b277d2471ee4ff54ebf62d584b25827b, type: 2}
+    - {fileID: 11400000, guid: 145406302fab5db43813f9c0d8a5c5ff, type: 2}
+    - {fileID: 11400000, guid: 70c58258816bd834dbc6092254db5793, type: 2}
+    - {fileID: 11400000, guid: f3d690d85d9ac464c89b26d510a5d5b9, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: 6c3fb02fb09783a43b8c667f97bfb487, type: 2}
+    - {fileID: 11400000, guid: 5c837cb71f2f8964e8b3ff7bf43e3c43, type: 2}
+    - {fileID: 11400000, guid: 70c58258816bd834dbc6092254db5793, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    hand:
+    - {fileID: 11400000, guid: b7ff5093dedf77a48b6a0f832a16a27a, type: 2}
+    - {fileID: 11400000, guid: ede1d0b2be6e88b44b5cd6a05c776c63, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: 6c3fb02fb09783a43b8c667f97bfb487, type: 2}
+    - {fileID: 11400000, guid: 392e21ff1b062084eb50bf5e513ea032, type: 2}
+    discard: []
+    hero: {fileID: 1874287419}
+    heroInPlay: 1
+    leaderless: 0
+    fatigueCounter: 0
+    turnNumber: 0
+  shadowPlayer:
+    playerName: Shadow
+    faction: 1
+    side: 1
+    influence: 30
+    willpowerMax: 1
+    willpowerPool: 0
+    deck:
+    - {fileID: 11400000, guid: 51c41d3afda2e6d4ead592c1aba96b8d, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    - {fileID: 11400000, guid: 51c41d3afda2e6d4ead592c1aba96b8d, type: 2}
+    - {fileID: 11400000, guid: c99b2b34aaa58e043b11fd77082aa281, type: 2}
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: 52dbeeb7d3a5d224c9760ba992969d51, type: 2}
+    - {fileID: 11400000, guid: 6ea2c3619baef714ab900106da28ce4d, type: 2}
+    - {fileID: 11400000, guid: 2d85d81964ed04f4aadeb2e4068de6f2, type: 2}
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    - {fileID: 11400000, guid: 238a823e5ac68d84893576f190dc90d1, type: 2}
+    - {fileID: 11400000, guid: 5bd7d26682396244db37e1547764d757, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    - {fileID: 11400000, guid: 882c471ab2b781149922594fd76ca3bd, type: 2}
+    - {fileID: 11400000, guid: f0a11bd5cafd9ad40b8789df33bf0777, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: f11c4997787f7ee4586e7d9474dc66d1, type: 2}
+    - {fileID: 11400000, guid: 6ea2c3619baef714ab900106da28ce4d, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    - {fileID: 11400000, guid: 080d8b986d385474d948f38aa08b1f9a, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    - {fileID: 11400000, guid: 882c471ab2b781149922594fd76ca3bd, type: 2}
+    - {fileID: 11400000, guid: f0a11bd5cafd9ad40b8789df33bf0777, type: 2}
+    hand:
+    - {fileID: 11400000, guid: 5bd7d26682396244db37e1547764d757, type: 2}
+    - {fileID: 11400000, guid: 182edbc1744c6ac46abb2c88b76dca6a, type: 2}
+    - {fileID: 11400000, guid: 080d8b986d385474d948f38aa08b1f9a, type: 2}
+    - {fileID: 11400000, guid: bee7b770cbb3e644e94158c1a12ca61f, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    discard: []
+    hero: {fileID: 0}
+    heroInPlay: 1
+    leaderless: 0
+    fatigueCounter: 0
+    turnNumber: 0
+  board: {fileID: 0}
+  ring:
+    corruption: 0
+    bearer: 0
+    fpActivatedThisTurn: 0
+    shadowActivatedThisTurn: 0
+    shadowBearerTurns: 0
+  currentTurnNumber: 1
+  activePlayer: 0
+  currentPhase: 0
+  fpFactionData: {fileID: 11400000, guid: 9d4b4e71bcecac14bbe82e204609d19d, type: 2}
+  shadowFactionData: {fileID: 11400000, guid: 51fc6526d52e16f409e9953de2217d45, type: 2}
+--- !u!4 &1435922940
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1435922938}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1501965030
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1501965032}
+  - component: {fileID: 1501965031}
+  m_Layer: 0
+  m_Name: Test
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1501965031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1501965030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e679871395135b4eae87a04d202db42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.GameManager
+  fpPlayer:
+    playerName: 
+    faction: 0
+    side: 0
+    influence: 30
+    willpowerMax: 1
+    willpowerPool: 0
+    deck: []
+    hand: []
+    discard: []
+    hero: {fileID: 0}
+    heroInPlay: 1
+    leaderless: 0
+    fatigueCounter: 0
+    turnNumber: 0
+  shadowPlayer:
+    playerName: 
+    faction: 0
+    side: 0
+    influence: 30
+    willpowerMax: 1
+    willpowerPool: 0
+    deck: []
+    hand: []
+    discard: []
+    hero: {fileID: 0}
+    heroInPlay: 1
+    leaderless: 0
+    fatigueCounter: 0
+    turnNumber: 0
+  board: {fileID: 0}
+  ring:
+    corruption: 0
+    bearer: 0
+    fpActivatedThisTurn: 0
+    shadowActivatedThisTurn: 0
+    shadowBearerTurns: 0
+  currentTurnNumber: 1
+  activePlayer: 0
+  currentPhase: 0
+  fpFactionData: {fileID: 11400000, guid: 9d4b4e71bcecac14bbe82e204609d19d, type: 2}
+  shadowFactionData: {fileID: 11400000, guid: 51fc6526d52e16f409e9953de2217d45, type: 2}
+--- !u!4 &1501965032
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1501965030}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1711012890
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1711012892}
+  - component: {fileID: 1711012891}
+  m_Layer: 0
+  m_Name: T
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1711012891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1711012890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e679871395135b4eae87a04d202db42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.GameManager
+  fpPlayer:
+    playerName: Free Peoples
+    faction: 0
+    side: 0
+    influence: 30
+    willpowerMax: 1
+    willpowerPool: 0
+    deck:
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: 5c837cb71f2f8964e8b3ff7bf43e3c43, type: 2}
+    - {fileID: 11400000, guid: ede1d0b2be6e88b44b5cd6a05c776c63, type: 2}
+    - {fileID: 11400000, guid: ede1d0b2be6e88b44b5cd6a05c776c63, type: 2}
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: f3d690d85d9ac464c89b26d510a5d5b9, type: 2}
+    - {fileID: 11400000, guid: 39187dfdcf525c6479a619c29b2db28e, type: 2}
+    - {fileID: 11400000, guid: 39187dfdcf525c6479a619c29b2db28e, type: 2}
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: 392e21ff1b062084eb50bf5e513ea032, type: 2}
+    - {fileID: 11400000, guid: 417d0e900186fbe4b8ab38b0761a01b4, type: 2}
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    - {fileID: 11400000, guid: b7ff5093dedf77a48b6a0f832a16a27a, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    - {fileID: 11400000, guid: 70c58258816bd834dbc6092254db5793, type: 2}
+    - {fileID: 11400000, guid: 145406302fab5db43813f9c0d8a5c5ff, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    - {fileID: 11400000, guid: b277d2471ee4ff54ebf62d584b25827b, type: 2}
+    - {fileID: 11400000, guid: 70c58258816bd834dbc6092254db5793, type: 2}
+    - {fileID: 11400000, guid: 6c3fb02fb09783a43b8c667f97bfb487, type: 2}
+    - {fileID: 11400000, guid: 6c3fb02fb09783a43b8c667f97bfb487, type: 2}
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    hand:
+    - {fileID: 11400000, guid: f3d690d85d9ac464c89b26d510a5d5b9, type: 2}
+    - {fileID: 11400000, guid: d720f4071bc34c6438f5f8d20f84f2e9, type: 2}
+    - {fileID: 11400000, guid: 417d0e900186fbe4b8ab38b0761a01b4, type: 2}
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    discard: []
+    hero: {fileID: 1256553204}
+    heroInPlay: 1
+    leaderless: 0
+    fatigueCounter: 0
+    turnNumber: 0
+  shadowPlayer:
+    playerName: Shadow
+    faction: 1
+    side: 1
+    influence: 30
+    willpowerMax: 1
+    willpowerPool: 0
+    deck:
+    - {fileID: 11400000, guid: 5bd7d26682396244db37e1547764d757, type: 2}
+    - {fileID: 11400000, guid: bee7b770cbb3e644e94158c1a12ca61f, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: 6ea2c3619baef714ab900106da28ce4d, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: c99b2b34aaa58e043b11fd77082aa281, type: 2}
+    - {fileID: 11400000, guid: 2d85d81964ed04f4aadeb2e4068de6f2, type: 2}
+    - {fileID: 11400000, guid: 52dbeeb7d3a5d224c9760ba992969d51, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    - {fileID: 11400000, guid: 882c471ab2b781149922594fd76ca3bd, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: 882c471ab2b781149922594fd76ca3bd, type: 2}
+    - {fileID: 11400000, guid: 5bd7d26682396244db37e1547764d757, type: 2}
+    - {fileID: 11400000, guid: f11c4997787f7ee4586e7d9474dc66d1, type: 2}
+    - {fileID: 11400000, guid: 080d8b986d385474d948f38aa08b1f9a, type: 2}
+    - {fileID: 11400000, guid: f0a11bd5cafd9ad40b8789df33bf0777, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    - {fileID: 11400000, guid: 080d8b986d385474d948f38aa08b1f9a, type: 2}
+    - {fileID: 11400000, guid: 238a823e5ac68d84893576f190dc90d1, type: 2}
+    - {fileID: 11400000, guid: 51c41d3afda2e6d4ead592c1aba96b8d, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: f0a11bd5cafd9ad40b8789df33bf0777, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    hand:
+    - {fileID: 11400000, guid: 182edbc1744c6ac46abb2c88b76dca6a, type: 2}
+    - {fileID: 11400000, guid: 6ea2c3619baef714ab900106da28ce4d, type: 2}
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    - {fileID: 11400000, guid: 51c41d3afda2e6d4ead592c1aba96b8d, type: 2}
+    discard: []
+    hero: {fileID: 0}
+    heroInPlay: 1
+    leaderless: 0
+    fatigueCounter: 0
+    turnNumber: 0
+  board: {fileID: 0}
+  ring:
+    corruption: 0
+    bearer: 0
+    fpActivatedThisTurn: 0
+    shadowActivatedThisTurn: 0
+    shadowBearerTurns: 0
+  currentTurnNumber: 1
+  activePlayer: 0
+  currentPhase: 0
+  fpFactionData: {fileID: 11400000, guid: 9d4b4e71bcecac14bbe82e204609d19d, type: 2}
+  shadowFactionData: {fileID: 11400000, guid: 51fc6526d52e16f409e9953de2217d45, type: 2}
+--- !u!4 &1711012892
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1711012890}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1791131051
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1791131053}
+  - component: {fileID: 1791131052}
+  m_Layer: 0
+  m_Name: Test
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1791131052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1791131051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e679871395135b4eae87a04d202db42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.GameManager
+  fpPlayer:
+    playerName: Free Peoples
+    faction: 0
+    side: 0
+    influence: 30
+    willpowerMax: 1
+    willpowerPool: 0
+    deck:
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    - {fileID: 11400000, guid: ede1d0b2be6e88b44b5cd6a05c776c63, type: 2}
+    - {fileID: 11400000, guid: 39187dfdcf525c6479a619c29b2db28e, type: 2}
+    - {fileID: 11400000, guid: f3d690d85d9ac464c89b26d510a5d5b9, type: 2}
+    - {fileID: 11400000, guid: b7ff5093dedf77a48b6a0f832a16a27a, type: 2}
+    - {fileID: 11400000, guid: 39187dfdcf525c6479a619c29b2db28e, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    - {fileID: 11400000, guid: 417d0e900186fbe4b8ab38b0761a01b4, type: 2}
+    - {fileID: 11400000, guid: 6c3fb02fb09783a43b8c667f97bfb487, type: 2}
+    - {fileID: 11400000, guid: b277d2471ee4ff54ebf62d584b25827b, type: 2}
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: ede1d0b2be6e88b44b5cd6a05c776c63, type: 2}
+    - {fileID: 11400000, guid: 5c837cb71f2f8964e8b3ff7bf43e3c43, type: 2}
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: 70c58258816bd834dbc6092254db5793, type: 2}
+    - {fileID: 11400000, guid: c660be5a1f122584695b8ef387c0dd88, type: 2}
+    - {fileID: 11400000, guid: 99b15ca0093f6c34282878e2402d0b11, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    - {fileID: 11400000, guid: 145406302fab5db43813f9c0d8a5c5ff, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: 417d0e900186fbe4b8ab38b0761a01b4, type: 2}
+    - {fileID: 11400000, guid: 392e21ff1b062084eb50bf5e513ea032, type: 2}
+    - {fileID: 11400000, guid: f3d690d85d9ac464c89b26d510a5d5b9, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    hand:
+    - {fileID: 11400000, guid: d720f4071bc34c6438f5f8d20f84f2e9, type: 2}
+    - {fileID: 11400000, guid: 87127fddfb82d8f4ca9cf245f1ffcb42, type: 2}
+    - {fileID: 11400000, guid: b5e29a5a7f4f21f4ba6147581e3cc7a5, type: 2}
+    - {fileID: 11400000, guid: 6c3fb02fb09783a43b8c667f97bfb487, type: 2}
+    - {fileID: 11400000, guid: 70c58258816bd834dbc6092254db5793, type: 2}
+    discard: []
+    hero: {fileID: 1079731318}
+    heroInPlay: 1
+    leaderless: 0
+    fatigueCounter: 0
+    turnNumber: 0
+  shadowPlayer:
+    playerName: Shadow
+    faction: 1
+    side: 1
+    influence: 30
+    willpowerMax: 1
+    willpowerPool: 0
+    deck:
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: 6ea2c3619baef714ab900106da28ce4d, type: 2}
+    - {fileID: 11400000, guid: 182edbc1744c6ac46abb2c88b76dca6a, type: 2}
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: 080d8b986d385474d948f38aa08b1f9a, type: 2}
+    - {fileID: 11400000, guid: 882c471ab2b781149922594fd76ca3bd, type: 2}
+    - {fileID: 11400000, guid: 2d85d81964ed04f4aadeb2e4068de6f2, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    - {fileID: 11400000, guid: 882c471ab2b781149922594fd76ca3bd, type: 2}
+    - {fileID: 11400000, guid: f0a11bd5cafd9ad40b8789df33bf0777, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: 52dbeeb7d3a5d224c9760ba992969d51, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    - {fileID: 11400000, guid: 6e74fa3c7b508a0459cd7040e327c7d3, type: 2}
+    - {fileID: 11400000, guid: 6ea2c3619baef714ab900106da28ce4d, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: 4001df7325646e443ab87cd654452a3c, type: 2}
+    - {fileID: 11400000, guid: 5bd7d26682396244db37e1547764d757, type: 2}
+    - {fileID: 11400000, guid: 080d8b986d385474d948f38aa08b1f9a, type: 2}
+    - {fileID: 11400000, guid: 51c41d3afda2e6d4ead592c1aba96b8d, type: 2}
+    - {fileID: 11400000, guid: bee7b770cbb3e644e94158c1a12ca61f, type: 2}
+    - {fileID: 11400000, guid: 51c41d3afda2e6d4ead592c1aba96b8d, type: 2}
+    - {fileID: 11400000, guid: c99b2b34aaa58e043b11fd77082aa281, type: 2}
+    - {fileID: 11400000, guid: 5bd7d26682396244db37e1547764d757, type: 2}
+    - {fileID: 11400000, guid: 238a823e5ac68d84893576f190dc90d1, type: 2}
+    hand:
+    - {fileID: 11400000, guid: f11c4997787f7ee4586e7d9474dc66d1, type: 2}
+    - {fileID: 11400000, guid: 3898c31e983a9e444ad7f27248b7cd30, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    - {fileID: 11400000, guid: c21ad6c519e80494e95ad215f1d34044, type: 2}
+    - {fileID: 11400000, guid: f0a11bd5cafd9ad40b8789df33bf0777, type: 2}
+    discard: []
+    hero: {fileID: 0}
+    heroInPlay: 1
+    leaderless: 0
+    fatigueCounter: 0
+    turnNumber: 0
+  board: {fileID: 0}
+  ring:
+    corruption: 0
+    bearer: 0
+    fpActivatedThisTurn: 0
+    shadowActivatedThisTurn: 0
+    shadowBearerTurns: 0
+  currentTurnNumber: 1
+  activePlayer: 0
+  currentPhase: 0
+  fpFactionData: {fileID: 11400000, guid: 9d4b4e71bcecac14bbe82e204609d19d, type: 2}
+  shadowFactionData: {fileID: 11400000, guid: 51fc6526d52e16f409e9953de2217d45, type: 2}
+--- !u!4 &1791131053
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1791131051}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1874287418
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1874287420}
+  - component: {fileID: 1874287419}
+  m_Layer: 0
+  m_Name: Hero_Aragorn, Heir of Isildur
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1874287419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874287418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84fdc0652d022d548a61cb0d4103dc65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.BoardCreature
+  cardData: {fileID: 11400000, guid: 34d1209e8ef478442bf85eaa6fbd57a0, type: 2}
+  currentToughness: 5
+  damage: 0
+  tapped: 0
+  hasAttackedThisTurn: 0
+  hasMovedThisTurn: 0
+  hasUsedAbilityThisTurn: 0
+  turnEntered: 1
+  powerBonus: 0
+  toughnessBonus: 0
+  temporaryKeywords: 
+--- !u!4 &1874287420
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874287418}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2037975902
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2037975904}
+  - component: {fileID: 2037975903}
+  m_Layer: 0
+  m_Name: Hero_Gothmog, Lieutenant of Morgul
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2037975903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2037975902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84fdc0652d022d548a61cb0d4103dc65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LOTRCardGame.BoardCreature
+  cardData: {fileID: 11400000, guid: 00b1e7d0e6b97564fa6abbb2e9bb8e82, type: 2}
+  currentToughness: 4
+  damage: 0
+  tapped: 0
+  hasAttackedThisTurn: 0
+  hasMovedThisTurn: 0
+  hasUsedAbilityThisTurn: 0
+  turnEntered: 1
+  powerBonus: 0
+  toughnessBonus: 0
+  temporaryKeywords: 
+--- !u!4 &2037975904
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2037975902}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -430,3 +2013,19 @@ SceneRoots:
   - {fileID: 330585546}
   - {fileID: 410087041}
   - {fileID: 832575519}
+  - {fileID: 944299426}
+  - {fileID: 539624692}
+  - {fileID: 1209259534}
+  - {fileID: 1001621423}
+  - {fileID: 1113949553}
+  - {fileID: 1501965032}
+  - {fileID: 1791131053}
+  - {fileID: 1079731319}
+  - {fileID: 1435922940}
+  - {fileID: 1874287420}
+  - {fileID: 249862905}
+  - {fileID: 224593772}
+  - {fileID: 1711012892}
+  - {fileID: 1256553205}
+  - {fileID: 653771346}
+  - {fileID: 2037975904}
