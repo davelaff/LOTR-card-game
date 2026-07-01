@@ -52,6 +52,32 @@ namespace LOTRCardGame.Gameplay
             }
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            // Auto-create child managers if not assigned in Inspector
+            EnsureManager(ref fpPlayer, "FP Player");
+            EnsureManager(ref shadowPlayer, "Shadow Player");
+            EnsureManager(ref board, "Board");
+            EnsureManager(ref ring, "Ring");
+        }
+
+        /// <summary>
+        /// If manager ref is null, create a child GameObject with the component.
+        /// </summary>
+        private void EnsureManager<T>(ref T manager, string name) where T : MonoBehaviour
+        {
+            if (manager != null) return;
+            var child = new GameObject(name);
+            child.transform.SetParent(transform);
+            manager = child.AddComponent<T>();
+        }
+
+        private bool setupCalled;
+
+        private void Start()
+        {
+            // Auto-setup Gondor vs Mordor for testing
+            if (!setupCalled)
+                Setup();
         }
 
         // --- Setup ---
@@ -62,6 +88,7 @@ namespace LOTRCardGame.Gameplay
         /// </summary>
         public void Setup(Faction fpFaction = Faction.Gondor, Faction shadowFaction = Faction.Mordor)
         {
+            setupCalled = true;
             string fpName = $"Free Peoples ({fpFaction})";
             string shadowName = $"Shadow ({shadowFaction})";
 
@@ -107,6 +134,13 @@ namespace LOTRCardGame.Gameplay
             messages.Add($"Heroes: {fpHero} vs {shadowHero}");
             messages.Add($"Decks: {fpPlayer.deck.Count} FP, {shadowPlayer.deck.Count} Shadow");
             messages.Add($"Opening hands: 7 cards each.");
+
+            // Console dump for verification
+            Debug.Log($"[Setup] {fpName} vs {shadowName}");
+            Debug.Log($"[Setup] Heroes: {fpHero} vs {shadowHero}");
+            Debug.Log($"[Setup] Decks: {fpPlayer.deck.Count} FP cards, {shadowPlayer.deck.Count} Shadow cards");
+            Debug.Log($"[Setup] FP hand: {string.Join(", ", fpPlayer.hand.ConvertAll(c => c.cardName))}");
+            Debug.Log($"[Setup] Shadow hand: {string.Join(", ", shadowPlayer.hand.ConvertAll(c => c.cardName))}");
         }
 
         /// <summary>
