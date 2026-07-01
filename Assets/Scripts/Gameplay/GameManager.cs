@@ -177,6 +177,45 @@ namespace LOTRCardGame.Gameplay
             return heroData.cardName;
         }
 
+        // --- Test Input ---
+
+        private void Update()
+        {
+            if (!setupCalled || gameOver) return;
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if (currentPhase == GamePhase.Start || currentPhase == GamePhase.End)
+                {
+                    StartTurn();
+                    DumpPhase();
+                }
+                else
+                {
+                    Debug.Log($"[Input] Already in {currentPhase} phase — press E to end turn.");
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                if (currentPhase == GamePhase.Main)
+                {
+                    EndTurn();
+                    DumpPhase();
+                }
+                else
+                {
+                    Debug.Log($"[Input] Not in Main phase — press Space to start a turn.");
+                }
+            }
+        }
+
+        private void DumpPhase()
+        {
+            foreach (var msg in phaseMessages)
+                Debug.Log($"[Phase] {msg}");
+        }
+
         // --- Turn Flow ---
 
         /// <summary>
@@ -248,6 +287,8 @@ namespace LOTRCardGame.Gameplay
             // Progress to Main Phase
             currentPhase = GamePhase.Main;
             phaseMessages.Add($"Phase: {GamePhase.Main}");
+
+            DumpPhase();
         }
 
         /// <summary>
@@ -300,6 +341,8 @@ namespace LOTRCardGame.Gameplay
                 phaseMessages.Add(
                     $"Turn passes to {(activePlayer == "fp" ? "Free Peoples" : "Shadow")}.");
             }
+
+            DumpPhase();
         }
 
         // --- Game Over ---
