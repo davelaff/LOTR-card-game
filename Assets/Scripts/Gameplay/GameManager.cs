@@ -46,6 +46,7 @@ namespace LOTRCardGame.Gameplay
         private InputMode inputMode = InputMode.Normal;
         private List<BoardAlly> availableAttackers = new List<BoardAlly>();
         private int lastInputFrame = -999;
+        private KeyCode pendingKey = KeyCode.None;
 
         // --- Singleton ---
 
@@ -194,8 +195,14 @@ namespace LOTRCardGame.Gameplay
         {
             if (!setupCalled || gameOver) return;
 
+            // Process input from OnGUI event capture (bypasses Input System focus issues)
+            var key = pendingKey;
+            pendingKey = KeyCode.None;
+
+            if (key == KeyCode.None) return;
+
             // Esc always cancels input mode
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (key == KeyCode.Escape)
             {
                 if (inputMode != InputMode.Normal)
                 {
@@ -208,33 +215,29 @@ namespace LOTRCardGame.Gameplay
             // Attacking mode: select attacker by number
             if (inputMode == InputMode.Attacking)
             {
-                for (int k = (int)KeyCode.Alpha1; k <= (int)KeyCode.Alpha9; k++)
+                if (key >= KeyCode.Alpha1 && key <= KeyCode.Alpha9)
                 {
-                    if (Input.GetKeyDown((KeyCode)k))
+                    int idx = (int)key - (int)KeyCode.Alpha1;
+                    if (idx < availableAttackers.Count)
                     {
-                        int idx = k - (int)KeyCode.Alpha1;
-                        if (idx < availableAttackers.Count)
-                        {
-                            ExecuteAttack(availableAttackers[idx]);
-                            inputMode = InputMode.Normal;
-                        }
-                        else
-                        {
-                            Debug.Log($"[Attack] Invalid index {idx + 1}. Esc to cancel.");
-                        }
-                        return;
+                        ExecuteAttack(availableAttackers[idx]);
+                        inputMode = InputMode.Normal;
+                    }
+                    else
+                    {
+                        Debug.Log($"[Attack] Invalid index {idx + 1}. Esc to cancel.");
                     }
                 }
-                return; // ignore all other keys in attack mode
+                return;
             }
 
             // Normal mode
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (key == KeyCode.Space)
             {
                 if (currentPhase == GamePhase.Start || currentPhase == GamePhase.End)
                 {
                     StartTurn();
-                    DumpHand(); // show hand automatically at turn start
+                    DumpHand();
                     DumpPhase();
                 }
                 else
@@ -244,7 +247,7 @@ namespace LOTRCardGame.Gameplay
                 return;
             }
 
-            if (Input.GetKeyDown(KeyCode.E))
+            if (key == KeyCode.E)
             {
                 if (currentPhase == GamePhase.Main)
                 {
@@ -258,32 +261,28 @@ namespace LOTRCardGame.Gameplay
                 return;
             }
 
-            if (Input.GetKeyDown(KeyCode.H))
+            if (key == KeyCode.H)
             {
                 DumpHand();
                 return;
             }
 
-            if (Input.GetKeyDown(KeyCode.B))
+            if (key == KeyCode.B)
             {
                 DumpBoard();
                 return;
             }
 
-            if (Input.GetKeyDown(KeyCode.A))
+            if (key == KeyCode.A)
             {
                 EnterAttackMode();
                 return;
             }
 
             // 1-9: play card from hand
-            for (int k = (int)KeyCode.Alpha1; k <= (int)KeyCode.Alpha9; k++)
+            if (key >= KeyCode.Alpha1 && key <= KeyCode.Alpha9)
             {
-                if (Input.GetKeyDown((KeyCode)k))
-                {
-                    PlayCardFromHand(k - (int)KeyCode.Alpha1);
-                    return;
-                }
+                PlayCardFromHand((int)key - (int)KeyCode.Alpha1);
             }
         }
 
@@ -301,8 +300,11 @@ namespace LOTRCardGame.Gameplay
 
             // Detect any keyboard input via IMGUI event system
             Event e = Event.current;
-            if (e.type == EventType.KeyDown)
+            if (e != null && e.isKey && e.type == EventType.KeyDown)
+            {
                 lastInputFrame = Time.frameCount;
+                pendingKey = e.keyCode;
+            }
 
             float y = 10;
             GUI.Box(new Rect(10, y, 400, gameOver ? 80 : 200), "");
